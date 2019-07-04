@@ -1,13 +1,16 @@
 import React, {Component} from 'react';
-import './App.css';
+import './style/App.css';
 import Npuzzle from './components/Npuzzle';
 
-const App = (props) => {
-     return (
-         <div className="App">
-             <Npuzzle size="3"/>
-         </div>
-     );
-};
+class App extends Component {
+    render()
+    {
+        return (
+            <div className="App">
+                <Npuzzle size={5}/>
+            </div>
+        );
+    }
+}
 
 export default App;

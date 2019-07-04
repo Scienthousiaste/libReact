@@ -1,18 +1,20 @@
 import React from 'react';
-import Tile from "./Tile";
+import Tile from './Tile';
+import withClass from './hoc/withClass';
+import '../style/TileSet.css';
 
 const TileSet = (props) => {
-
-    const tileSet = [...Array(props.size).keys().map((x) => { < div className="col" >
-        {props.arrayNumbers.slice(x * props.size, props.size).map(v => < Tile val={v} />)}
-        </div>;
-    }];
+    const tileArray = [...Array(props.size).keys()].map(x => {
+        return (
+            < div className="col" key={x}>
+                {props.arrayNumbers.slice(x * props.size, (x + 1) * props.size).map(v => < Tile val={v} key={v} clicked={props.clicked}/>)}
+            </div>
+        )
+    });
 
     return (
-        <div className="TileSet">
-            {tileSet}
-        </div>
+        tileArray
     )
 };
 
-export default TileSet;
+export default withClass(TileSet, "TileSet");
