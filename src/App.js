@@ -8,9 +8,6 @@ class App extends Component {
         return (
             <div className="App">
                 <Npuzzle size={2}/>
-                <Npuzzle size={3}/>
-                <Npuzzle size={4}/>
-                <Npuzzle size={5}/>
             </div>
         );
     }

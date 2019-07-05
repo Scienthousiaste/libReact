@@ -46,8 +46,23 @@ function computeSnailIteration(size) {
 }
 
 function countInversions(arr, snail) {
+    let inversions = 0;
+    let prevValues = [];
     console.log(snail.toString());
-    return 0;
+
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < prevValues.length; j++) {
+            if (arr[snail[i]] < prevValues[j]) {
+                console.log("i " + i + " j " + j + " arr[snail[i]]" + arr[snail[i]] + " prevValues[j] " + prevValues[j]);
+
+                inversions++;
+            }
+        }
+        if (arr[i] === 0) prevValues.push(Number.MAX_SAFE_INTEGER);
+        else prevValues.push(arr[i]);
+    }
+
+    return inversions;
 }
 
 function shuffle(a) {
