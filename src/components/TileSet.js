@@ -6,7 +6,7 @@ import '../style/TileSet.css';
 const TileSet = (props) => {
     const tileArray = [...Array(props.size).keys()].map(x => {
         return (
-            < div className="col" key={x}>
+            < div className="row" key={x}>
                 {props.arrayNumbers.slice(x * props.size, (x + 1) * props.size).map(v => < Tile val={v} key={v} clicked={props.clicked}/>)}
             </div>
         )
