@@ -3,7 +3,7 @@ import Tile from './Tile';
 import withClass from './hoc/withClass';
 import '../style/TileSet.css';
 
-const TileSet = (props) => {
+const tileSet = (props) => {
     const tileArray = [...Array(props.size).keys()].map(x => {
         return (
             < div className="row" key={x}>
@@ -17,4 +17,4 @@ const TileSet = (props) => {
     )
 };
 
-export default withClass(TileSet, "TileSet");
+export default withClass(tileSet, "TileSet");

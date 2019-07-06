@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TileSet from './TileSet';
+import Solver from './Solver';
 import '../style/Npuzzle.css';
 
 /*
@@ -46,6 +47,7 @@ function computeSnailIteration(size) {
 }
 
 function countInversions(arr, snail) {
+    //works, but is SLOW
     let inversions = 0;
     let prevValues = [];
 
@@ -53,14 +55,12 @@ function countInversions(arr, snail) {
         if (arr[snail[i]] !== 0) {
             for (let j = 0; j < prevValues.length; j++) {
                 if (arr[snail[i]] < prevValues[j]) {
-                    console.log("i " + i + " j " + j + " arr[snail[i]]" + arr[snail[i]] + " prevValues[j] " + prevValues[j]);
                     inversions++;
                 }
             }
         }
         prevValues.push(arr[snail[i]]);
     }
-
     return inversions;
 }
 
@@ -107,6 +107,7 @@ class Npuzzle extends Component {
                 <TileSet arrayNumbers={this.state.arrayNumbers} size={this.state.size} clicked={this.trySwap}/>
                 <p>Inversions : {inversions}</p>
                 {solved ? <p>Solved!</p> :''}
+                <Solver arrayNumbers={this.state.arrayNumbers} inversions={inversions} snail={this.state.snail} />
             </div>
         )
     };

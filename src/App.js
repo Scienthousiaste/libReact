@@ -8,7 +8,7 @@ class App extends Component {
         return (
             <div className="App">
                 <Npuzzle size={2}/>
-
+w
             </div>
         );
     }
