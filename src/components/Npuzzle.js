@@ -48,18 +48,17 @@ function computeSnailIteration(size) {
 function countInversions(arr, snail) {
     let inversions = 0;
     let prevValues = [];
-    console.log(snail.toString());
 
     for (let i = 0; i < arr.length; i++) {
-        for (let j = 0; j < prevValues.length; j++) {
-            if (arr[snail[i]] < prevValues[j]) {
-                console.log("i " + i + " j " + j + " arr[snail[i]]" + arr[snail[i]] + " prevValues[j] " + prevValues[j]);
-
-                inversions++;
+        if (arr[snail[i]] !== 0) {
+            for (let j = 0; j < prevValues.length; j++) {
+                if (arr[snail[i]] < prevValues[j]) {
+                    console.log("i " + i + " j " + j + " arr[snail[i]]" + arr[snail[i]] + " prevValues[j] " + prevValues[j]);
+                    inversions++;
+                }
             }
         }
-        if (arr[i] === 0) prevValues.push(Number.MAX_SAFE_INTEGER);
-        else prevValues.push(arr[i]);
+        prevValues.push(arr[snail[i]]);
     }
 
     return inversions;
@@ -100,10 +99,14 @@ class Npuzzle extends Component {
     };
 
     render = () => {
+        let inversions = countInversions(this.state.arrayNumbers, this.state.snail);
+        let solved = (inversions === 0 && this.state.arrayNumbers[this.state.snail[this.state.arrayNumbers.length - 1]] === 0) ? 1 : 0;
+
         return (
             <div className="Npuzzle">
                 <TileSet arrayNumbers={this.state.arrayNumbers} size={this.state.size} clicked={this.trySwap}/>
-                <p>Inversions : {countInversions(this.state.arrayNumbers, this.state.snail)}</p>
+                <p>Inversions : {inversions}</p>
+                {solved ? <p>Solved!</p> :''}
             </div>
         )
     };
