@@ -3,22 +3,6 @@ import TileSet from './TileSet';
 import Solver from './Solver';
 import '../style/Npuzzle.css';
 
-/*
-The user must be able to choose between at LEAST 3 (relevant) heuristic functions.
-    The Manhattan-distance heuristic is mandatory, the other two are up to you. By
-"relevant" we mean they must be admissible (Read up on what this means) and
-they must be something other than "just return a random value because #YOLO".
-• At the end of the search, the program has to provide the following values:
-◦ Total number of states ever selected in the "opened" set (complexity in time)
-◦ Maximum number of states ever represented in memory at the same time
-during the search (complexity in size)
-◦ Number of moves required to transition from the initial state to the final state,
-    according to the search
-◦ The ordered sequence of states that make up the solution, according to the
-search
-◦ The puzzle may be unsolvable, in which case you have to inform the user and
-exit
-*/
 
 function computeSnailIteration(size) {
     if (size < 2) return;

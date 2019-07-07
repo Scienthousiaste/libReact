@@ -1,6 +1,6 @@
 import React from 'react';
 import Tile from './Tile';
-import withClass from './hoc/withClass';
+import WithClass from './hoc/WithClass';
 import '../style/TileSet.css';
 
 const tileSet = (props) => {
@@ -17,4 +17,4 @@ const tileSet = (props) => {
     )
 };
 
-export default withClass(tileSet, "TileSet");
+export default WithClass(tileSet, "TileSet");
