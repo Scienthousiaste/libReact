@@ -9,12 +9,12 @@ class App extends Component {
 		console.log(input);
 	}
 
+	//	button onClick= {this.clickHandler.bind(this, parameter)}
     render()
     {
         return (
             <div className="App">
-				<PuzzleInput parseNpuzzle={this.parseNpuzzle}/> 
-                <Npuzzle size={2}/>
+				<PuzzleInput /> 
                 <Npuzzle size={4}/>
             </div>
         );
