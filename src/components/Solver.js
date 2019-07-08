@@ -29,7 +29,16 @@ The students have the output required by the subject, which is:
 	- Number of moves from initial state to solution
 
 - Ordered sequence of states that make up the solution
+
+a chaque iteration de la boucle, A* choisit d'etendre le chemin qui minimise
+f(n) = g(n) + h(n)
+- h: heuristique (manhattan, etc)
+- g: cout depuis start jusqu'a l'état n
+
+il faut accepter des fichiers en theorie... > node ?
+
 */
+
 
 const solver = (props) => {
 
@@ -42,6 +51,10 @@ const solver = (props) => {
         })
 
     };
+	
+	const computeManhatanDistance = (state) => {
+
+	}
 
     const solvable = props.inversions % 2 === 0 ? 1 : 0;
     return (

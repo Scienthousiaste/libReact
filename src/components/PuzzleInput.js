@@ -37,16 +37,16 @@ class PuzzleInput extends Component {
 				this.displayMessage("The detected size of the puzzle is too large (superior to " + MAX_PUZZLE_SIZE + ")");
 				return;
 			}
-			if (arr.length !== candidateSize) {
-				this.displayMessage("The given size of the puzzle doesn't match the given puzzle");
-				return ;
-			}
 
 			let arrNumbers = [];
 			let numbersBingo = Array(candidateSize * candidateSize).fill(false);
-
 			for (let i = 0; i < arr.length; i++) {
-				let numbers = arr[i].split(/\s/).filter((part) => {return !!part;}).map(x => parseInt(x));
+				arr[i] = arr[i].split("#")[0].trim();
+
+				let numbers = arr[i].split(/\s/).filter((part) => {
+					if (part.indexOf("#") == 0) return false;
+					return !!part;
+				}).map(x => parseInt(x));
 				if (numbers.length !== candidateSize) {
 					this.displayMessage("The "+ (i + 1) + "th row doesn't have the correct number of values");
 					return ;
@@ -54,11 +54,16 @@ class PuzzleInput extends Component {
 				arrNumbers.push(...numbers);
 				for (let j = 0; j < numbers.length; j++) {
 					if (numbersBingo[numbers[j]] !== false) {
-						this.displayMessage("A value is out of ranged or doubled");
+						this.displayMessage("A value is out of range or doubled");
 						return;
 					}
 					numbersBingo[numbers[j]] = true;
 				}
+			}
+			
+			if (numbersBingo.some(x => !x)) {
+				this.displayMessage("The array size is incorrect");
+				return ;
 			}
 
 			this.props.createNewPuzzle({
