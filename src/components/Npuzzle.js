@@ -57,11 +57,15 @@ function shuffle(a) {
 }
 
 class Npuzzle extends Component {
-    state =  {
-        snail: computeSnailIteration(this.props.size),
+	state = {
+       	snail: computeSnailIteration(this.props.size),
         size: this.props.size,
-        arrayNumbers: shuffle([...Array(this.props.size * this.props.size).keys()])
-    };
+		arrayNumbers: this.props.arrayNumbers, 
+		key: this.props.key
+	}
+		/*arrayNumbers: this.props.arrayNumbers ? this.props.arrayNumbers.slice(0) :
+					shuffle([...Array(this.props.size * this.props.size).keys()]);
+					*/
 
     trySwap = (value) => {
         return (() => {

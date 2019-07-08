@@ -6,7 +6,6 @@ class PuzzleInput extends Component {
 	state = {
 		input : ''
 	};
-
 	
 	displayMessage = (m) => {
 		alert(m);
@@ -41,7 +40,7 @@ class PuzzleInput extends Component {
 				this.displayMessage("The detected size of the puzzle is too large (superior to " + MAX_PUZZLE_SIZE + ")");
 				return;
 			}
-			if (arr.length != candidateSize) {
+			if (arr.length !== candidateSize) {
 				this.displayMessage("The given size of the puzzle doesn't match the given puzzle");
 				return ;
 			}
@@ -51,7 +50,7 @@ class PuzzleInput extends Component {
 
 			for (let i = 0; i < arr.length; i++) {
 				let numbers = arr[i].split(/\s/).filter((part) => {return !!part;}).map(x => parseInt(x));
-				if (numbers.length != candidateSize) {
+				if (numbers.length !== candidateSize) {
 					this.displayMessage("The "+ (i + 1) + "th row doesn't have the correct number of values");
 					return ;
 				}
@@ -65,8 +64,10 @@ class PuzzleInput extends Component {
 				}
 			}
 
-			alert("npuzzle constructed");
-			console.log(arrNumbers);
+			this.props.createNewPuzzle({
+				size: candidateSize,
+				arrayNumbers: arrNumbers
+			});
 		}
 	}
 
@@ -82,12 +83,3 @@ class PuzzleInput extends Component {
 }
 
 export default PuzzleInput;
-
-
-/*
-const parseNpuzzle = () => {
-		let arr = this.state.puzzle.split('\n');	
-
-		alert(arr.length);	
-	}
-	*/

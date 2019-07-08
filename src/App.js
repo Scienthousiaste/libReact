@@ -4,18 +4,29 @@ import Npuzzle from './components/Npuzzle';
 import PuzzleInput from './components/PuzzleInput';
 
 class App extends Component {
-	parseNpuzzle = (input) => {
-		alert(input);
-		console.log(input);
+	state = {
+		puzzles : []
+	}
+	
+	createNewPuzzle = (puzzleParams) => {
+		let newPuzzles = [...this.state.puzzles];
+		newPuzzles.push(puzzleParams);
+		this.setState({puzzles: newPuzzles});
 	}
 
-	//	button onClick= {this.clickHandler.bind(this, parameter)}
     render()
     {
+		const npuzzles = this.state.puzzles.map((p, index) => {
+			return (<Npuzzle
+				key={index}
+				size={p.size}
+				arrayNumbers={p.arrayNumbers}
+			/>)
+		})
         return (
             <div className="App">
-				<PuzzleInput /> 
-                <Npuzzle size={4}/>
+				<PuzzleInput createNewPuzzle={this.createNewPuzzle}/> 
+				{npuzzles}
             </div>
         );
     }
