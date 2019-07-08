@@ -47,12 +47,21 @@ const solver = (props) => {
             if (arr[snail[0]] === 0) {
                 return
             }
-            alert('no way to solve that for now haha');
+			computeManhattanDistance();
         })
 
     };
 	
-	const computeManhatanDistance = (state) => {
+	const computeManhattanDistance = () => {
+		console.log(props);
+		let dist = 0;
+		/*for (let i = 0; i < props.arr.length; i++) {
+			let x_goal = snail[i] % props.size;
+			let y_goal = snail[i] / props.size;
+			//			dist += (i / props.size - y_goal)
+
+
+		}*/
 
 	}
 

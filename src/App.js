@@ -5,7 +5,7 @@ import PuzzleInput from './components/PuzzleInput';
 
 class App extends Component {
 	state = {
-		puzzles : [{size: 4}]
+		puzzles : [{size: 4}, {size: 3}]
 	}
 	
 	createNewPuzzle = (puzzleParams) => {

@@ -44,7 +44,7 @@ class PuzzleInput extends Component {
 				arr[i] = arr[i].split("#")[0].trim();
 
 				let numbers = arr[i].split(/\s/).filter((part) => {
-					if (part.indexOf("#") == 0) return false;
+					if (part.indexOf("#") === 0) return false;
 					return !!part;
 				}).map(x => parseInt(x));
 				if (numbers.length !== candidateSize) {
