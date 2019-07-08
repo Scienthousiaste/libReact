@@ -7,9 +7,11 @@ class PuzzleInput extends Component {
 		input : ''
 	};
 
+	
 	displayMessage = (m) => {
 		alert(m);
 	}
+
 	changeHandler = (event) => {
 		this.setState({input : event.target.value});
 	}
@@ -36,14 +38,35 @@ class PuzzleInput extends Component {
 				return;
 			}
 			if (candidateSize > MAX_PUZZLE_SIZE) {
-				this.displayMessage("The candidate size is too large (superior to " + MAX_PUZZLE_SIZE + ")");
+				this.displayMessage("The detected size of the puzzle is too large (superior to " + MAX_PUZZLE_SIZE + ")");
 				return;
 			}
+			if (arr.length != candidateSize) {
+				this.displayMessage("The given size of the puzzle doesn't match the given puzzle");
+				return ;
+			}
 
+			let arrNumbers = [];
+			let numbersBingo = Array(candidateSize * candidateSize).fill(false);
 
+			for (let i = 0; i < arr.length; i++) {
+				let numbers = arr[i].split(/\s/).filter((part) => {return !!part;}).map(x => parseInt(x));
+				if (numbers.length != candidateSize) {
+					this.displayMessage("The "+ (i + 1) + "th row doesn't have the correct number of values");
+					return ;
+				}
+				arrNumbers.push(...numbers);
+				for (let j = 0; j < numbers.length; j++) {
+					if (numbersBingo[numbers[j]] !== false) {
+						this.displayMessage("A value is out of ranged or doubled");
+						return;
+					}
+					numbersBingo[numbers[j]] = true;
+				}
+			}
 
-
-			alert(candidateSize);
+			alert("npuzzle constructed");
+			console.log(arrNumbers);
 		}
 	}
 
