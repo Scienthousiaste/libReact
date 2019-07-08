@@ -6,11 +6,9 @@ class PuzzleInput extends Component {
 	state = {
 		input : ''
 	};
-	
 	displayMessage = (m) => {
 		alert(m);
 	}
-
 	changeHandler = (event) => {
 		this.setState({input : event.target.value});
 	}
@@ -19,7 +17,6 @@ class PuzzleInput extends Component {
 		if (arr[0].indexOf('#') !== -1) {
 			arr = arr.slice(1, arr.length);
 		}
-
 		if (arr.length > 0) {
 			let candidateSize;
 			if (arr[0].split(' ').length === 1) {
@@ -70,7 +67,6 @@ class PuzzleInput extends Component {
 			});
 		}
 	}
-
 	render() {
 		return (
 			<div className='PuzzleInput'>
