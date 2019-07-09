@@ -6,13 +6,13 @@ import PuzzleInput from './components/PuzzleInput';
 class App extends Component {
 	state = {
 		puzzles : [{size: 4}, {size: 3}]
-	}
+	};
 	
 	createNewPuzzle = (puzzleParams) => {
 		let newPuzzles = [...this.state.puzzles];
 		newPuzzles.push(puzzleParams);
 		this.setState({puzzles: newPuzzles});
-	}
+	};
 
     render()
     {
@@ -22,7 +22,7 @@ class App extends Component {
 				size={p.size}
 				arrayNumbers={p.arrayNumbers}
 			/>)
-		})
+		});
         return (
             <div className="App">
 				<PuzzleInput createNewPuzzle={this.createNewPuzzle}/> 
