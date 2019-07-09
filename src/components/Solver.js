@@ -37,6 +37,10 @@ f(n) = g(n) + h(n)
 
 il faut accepter des fichiers en theorie... > node ?
 
+
+
+	// implémenter A*, puis weightedA* (beaucoup plus rapide)
+	// heuristiques : conflits lineaires
 */
 
 
@@ -47,7 +51,7 @@ const solver = (props) => {
             if (arr[snail[0]] === 0) {
                 return
             }
-			computeManhattanDistance();
+			alert(computeManhattanDistance();
         })
 
     };
@@ -55,14 +59,12 @@ const solver = (props) => {
 	const computeManhattanDistance = () => {
 		console.log(props);
 		let dist = 0;
-		/*for (let i = 0; i < props.arr.length; i++) {
-			let x_goal = snail[i] % props.size;
-			let y_goal = snail[i] / props.size;
-			//			dist += (i / props.size - y_goal)
-
-
-		}*/
-
+		for (let i = 0; i < props.arrayNumbers.length; i++) {
+			let x_goal = props.snail[i] % props.size;
+			let y_goal = props.snail[i] / props.size;
+			dist += Math.abs(i / props.size - y_goal) + Math.abs(i % props.size - x_goal);
+		}
+		return dist;
 	}
 
     const solvable = props.inversions % 2 === 0 ? 1 : 0;

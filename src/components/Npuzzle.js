@@ -94,8 +94,9 @@ const Npuzzle = (props) => {
 	};
 
 	let board = null;
+	let inversions = null;
 	if (!state.loading) {
-		let inversions = countInversions(state.arrayNumbers, state.snail);
+		inversions = countInversions(state.arrayNumbers, state.snail);
 		let solved = (inversions === 0 && state.arrayNumbers[state.snail[state.arrayNumbers.length - 1]] === 0) ? 1 : 0;
 		board = <div><p>Inversions : {inversions}</p>{solved ? <p>Solved!</p> : ''}</div>;
 	}
@@ -104,6 +105,7 @@ const Npuzzle = (props) => {
 		<div className="Npuzzle">
 			{state.loading ? null : <TileSet arrayNumbers={state.arrayNumbers} size={state.size} clicked={trySwap}/>}
 			{board}
+			<Solver arrayNumbers={state.arrayNumbers} snail={state.snail} inversions={inversions} size={state.size}/>
 		</div>
 	)
 };
