@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import TileSet from './TileSet';
-import Solver from './Solver';
-import '../style/Npuzzle.css';
+import TileSet from './TileSet/TileSet';
+import Solver from './Solver/Solver';
+import classes from './NPuzzle.less';
 
 
 const computeSnailIteration = (size) => {
@@ -15,10 +15,8 @@ const computeSnailIteration = (size) => {
 
 	while (n_moves) {
 		while (beforeDecrementMoves) {
-			let movesThisDirection = n_moves;
-			while (movesThisDirection) {
+			for (let movesThisDirection = n_moves; movesThisDirection > 0; movesThisDirection--) {
 				cur_i += directionalMoves[directionIdx];
-				movesThisDirection--;
 				idxArr.push(cur_i);
 			}
 			directionIdx = (directionIdx + 1) % 4;
@@ -56,7 +54,7 @@ const shuffle = (a) => {
 	return a;
 };
 
-const Npuzzle = (props) => {
+const NPuzzle = (props) => {
 	const [state, setState] = useState({
 		snail: null,
 		size: 0,
@@ -79,13 +77,13 @@ const Npuzzle = (props) => {
 	const trySwap = (value) => {
 		let idx = state.arrayNumbers.findIndex((element) => element === value);
 		if (idx !== -1 && value !== 0) {
-			let idxZero = state.arrayNumbers.findIndex((element) => element === 0);
+			const idxZero = state.arrayNumbers.findIndex((element) => element === 0);
 			if (((idxZero === idx + 1) && (idxZero % state.size !== 0))
 				|| ((idxZero === idx - 1) && (idxZero % state.size !== state.size - 1))
 				|| idxZero === idx + state.size
 				|| idxZero === idx - state.size) {
 
-				let newArr = [...state.arrayNumbers];
+				const newArr = [...state.arrayNumbers];
 				newArr[idx] = state.arrayNumbers[idxZero];
 				newArr[idxZero] = state.arrayNumbers[idx];
 				setState({...state, arrayNumbers: newArr});
@@ -94,18 +92,19 @@ const Npuzzle = (props) => {
 	};
 
 	let board = null;
+
 	if (!state.loading) {
-		let inversions = countInversions(state.arrayNumbers, state.snail);
-		let solved = (inversions === 0 && state.arrayNumbers[state.snail[state.arrayNumbers.length - 1]] === 0) ? 1 : 0;
+		const inversions = countInversions(state.arrayNumbers, state.snail);
+		const solved = (inversions === 0 && state.arrayNumbers[state.snail[state.arrayNumbers.length - 1]] === 0) ? 1 : 0;
 		board = <div><p>Inversions : {inversions}</p>{solved ? <p>Solved!</p> : ''}</div>;
 	}
 
 	return (
-		<div className="Npuzzle">
+		<div className={classes.Npuzzle}>
 			{state.loading ? null : <TileSet arrayNumbers={state.arrayNumbers} size={state.size} clicked={trySwap}/>}
 			{board}
 		</div>
 	)
 };
 
-export default Npuzzle;
+export default NPuzzle;

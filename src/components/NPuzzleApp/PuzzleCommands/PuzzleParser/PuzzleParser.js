@@ -1,8 +1,8 @@
-import { MAX_PUZZLE_SIZE } from '../defines';
+import { MAX_PUZZLE_SIZE } from '../../../../defines';
 import React, { Component } from 'react';
-import '../style/PuzzleInput.css';
+import classes from './PuzzleParser.less';
 
-class PuzzleInput extends Component {
+class PuzzleParser extends Component {
 	state = {
 		input : ''
 	};
@@ -74,7 +74,7 @@ class PuzzleInput extends Component {
 	}
 	render() {
 		return (
-			<div className='PuzzleInput'>
+			<div className={classes.PuzzleInput}>
 				<p>Input a puzzle here: </p>
 				<textarea value={this.state.input} onChange={this.changeHandler}/>
 				<button onClick={this.parseInput}>Parse puzzle</button>
@@ -83,4 +83,4 @@ class PuzzleInput extends Component {
 	}
 }
 
-export default PuzzleInput;
+export default PuzzleParser;
