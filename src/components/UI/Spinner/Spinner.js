@@ -1,6 +1,6 @@
 import React from 'react';
 
-import classes from './Spinner.less';
+import classes from './Spinner.css';
 
 
 const spinner = (props) => (

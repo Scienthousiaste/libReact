@@ -1,4 +1,4 @@
-import { MAX_PUZZLE_SIZE } from '../../../../defines';
+import { MAX_PUZZLE_SIZE } from '../../../../helpers/Npuzzle/defines';
 import React, { Component } from 'react';
 import classes from './PuzzleParser.less';
 
@@ -6,12 +6,15 @@ class PuzzleParser extends Component {
 	state = {
 		input : ''
 	};
+
 	displayMessage = (m) => {
 		alert(m);
-	}
+	};
+
 	changeHandler = (event) => {
 		this.setState({input : event.target.value});
-	}
+	};
+
 	parseInput = () => {
 		let arr = this.state.input.split('\n');
 		if (arr[0].indexOf('#') !== -1) {
@@ -66,12 +69,10 @@ class PuzzleParser extends Component {
 				return ;
 			}
 
-			this.props.createNewPuzzle({
-				size: candidateSize,
-				arrayNumbers: arrNumbers
-			});
+			this.props.createNewPuzzle(candidateSize, arrNumbers);
 		}
-	}
+	};
+
 	render() {
 		return (
 			<div className={classes.PuzzleInput}>
