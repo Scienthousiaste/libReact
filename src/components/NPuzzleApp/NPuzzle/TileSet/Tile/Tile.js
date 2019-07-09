@@ -1,9 +1,9 @@
 import React from 'react';
-import '../style/Tile.css';
+import classes from './Tile.less';
 
 const Tile = (props) => {
     return (
-        <div className="Tile" onClick={() => props.clicked(props.val)} >
+        <div className={classes.Tile} onClick={() => props.clicked(props.val)} >
             {props.val === 0 ? '': props.val}
         </div>
     )
