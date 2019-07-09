@@ -21,7 +21,7 @@ const NPuzzleApp = (props) => {
 	const createNewPuzzle = (puzzleParams) => {
 		let newPuzzles = [...state.puzzles];
 		newPuzzles.push(puzzleParams);
-		this.setState({
+		setState({
 			...state,
 			puzzles: newPuzzles,
 		});

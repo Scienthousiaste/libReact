@@ -92,9 +92,9 @@ const NPuzzle = (props) => {
 	};
 
 	let board = null;
-
+	let inversions = null; 
 	if (!state.loading) {
-		const inversions = countInversions(state.arrayNumbers, state.snail);
+		inversions = countInversions(state.arrayNumbers, state.snail);
 		const solved = (inversions === 0 && state.arrayNumbers[state.snail[state.arrayNumbers.length - 1]] === 0) ? 1 : 0;
 		board = <div><p>Inversions : {inversions}</p>{solved ? <p>Solved!</p> : ''}</div>;
 	}
