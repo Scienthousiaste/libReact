@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Button from '../../UI/Button/Button';
 
 /*
 The user must be able to choose between at LEAST 3 (relevant) heuristic functions.
@@ -46,14 +47,12 @@ il faut accepter des fichiers en theorie... > node ?
 
 const solver = (props) => {
 
-    const solve = (arr, snail) => {
-        return (() => {
-			alert(computeManhattanDistance());
-        })
-    };
-	
+	const solve = (arr, snail) => {
+		alert(computeManhattanDistance());
+	};
+
 	//TODO : comparer performances avec differentes versions de computeManhattanDistance
-	
+
 	const computeManhattanDistance = () => {
 		let dist = 0;
 		for (let i = 0; i < props.arrayNumbers.length; i++) {
@@ -68,9 +67,10 @@ const solver = (props) => {
 		return dist;
 	}
 
-    return (
-        props.solvable ? <button onClick={solve(props.arrayNumbers, props.snail)}>Solve</button> : <p>Unsolvable</p>
-    )
+	return (
+		props.solvable ? <Button clicked={() => solve(props.arrayNumbers, props.snail)}>Solve</Button> :
+			<p>Unsolvable</p>
+	)
 };
 
 export default solver;

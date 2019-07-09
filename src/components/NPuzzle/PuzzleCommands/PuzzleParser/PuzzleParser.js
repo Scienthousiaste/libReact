@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import classes from './PuzzleParser.less';
 
 import Input from '../../../UI/Input/Input';
+import Button from '../../../UI/Button/Button';
 
 class PuzzleParser extends Component {
 	state = {
@@ -82,7 +83,7 @@ class PuzzleParser extends Component {
 			<div className={classes.PuzzleInput}>
 				<p>Input a puzzle here: </p>
 				<Input elementType={'textarea'} value={this.state.input} changed={this.changeHandler} />
-				<button onClick={this.parseInput}>Parse puzzle</button>
+				<Button clicked={this.parseInput}>Parse puzzle</Button>
 			</div>
 		)
 	}
