@@ -53,29 +53,13 @@ const solver = (props) => {
     };
 	
 	//TODO : comparer performances avec differentes versions de computeManhattanDistance
-	// virer les ternaires, etc
-	/*	const computeManhattanDistance = () => {
-		let dist = 0;
-		for (let i = 0; i < props.arrayNumbers.length; i++) {
-			const x_current = i % props.size;
-			const y_current = Math.floor(i / props.size);
-			const x_goal = props.arrayNumbers[i] === 0 ? props.snail[props.arrayNumbers.length - 1] % props.size
-												     : props.snail[props.arrayNumbers[i] - 1] % props.size;
-			const y_goal = props.arrayNumbers[i] === 0 ? Math.floor(props.snail[props.arrayNumbers.length - 1] / props.size)
-													 : Math.floor(props.snail[props.arrayNumbers[i] - 1] / props.size);
-
-			dist += Math.abs(y_current - y_goal) + Math.abs(x_current - x_goal);
-		}
-		return dist;
-	}
-	*/
+	
 	const computeManhattanDistance = () => {
 		let dist = 0;
 		for (let i = 0; i < props.arrayNumbers.length; i++) {
+			if (props.arrayNumbers[i] === 0) continue;
 			const x_current = i % props.size;
 			const y_current = Math.floor(i / props.size);
-
-			if (props.arrayNumbers[i] === 0) continue;
 			const x_goal = props.snail[props.arrayNumbers[i] - 1] % props.size;
 			const y_goal = Math.floor(props.snail[props.arrayNumbers[i] - 1] / props.size);
 
