@@ -50,7 +50,6 @@ const solver = (props) => {
         return (() => {
 			alert(computeManhattanDistance());
         })
-
     };
 	
 	//TODO : comparer performances avec differentes versions de computeManhattanDistance
@@ -70,9 +69,8 @@ const solver = (props) => {
 		return dist;
 	}
 
-    const solvable = props.inversions % 2 === 0 ? 1 : 0;
     return (
-        solvable ? <button onClick={solve(props.arrayNumbers, props.snail)}>Solve</button> : <p>Unsolvable</p>
+        props.solvable ? <button onClick={solve(props.arrayNumbers, props.snail)}>Solve</button> : <p>Unsolvable</p>
     )
 };
 

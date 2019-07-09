@@ -8,22 +8,27 @@ import TileSet from './TileSet/TileSet';
 import Spinner from '../UI/Spinner/Spinner';
 import PuzzleInfos from './PuzzleInfos/PuzzleInfos';
 import PuzzleCommands from './PuzzleCommands/PuzzleCommands';
+import Solver from './Solver/Solver';
 
 const NPuzzle = () => {
 	const [state, setState] = useState({
 		snail: null,
 		size: 0,
 		arrayNumbers: null,
+		solvable: false,
 		loading: true,
 	});
 
 	useEffect(() => {
 		const size = 4;
+		const array = generateRandomArray(size);
+		const snail = computeSnailIteration(size);
 		setState({
 			...state,
-			snail: computeSnailIteration(size),
+			snail: snail,
 			size: size,
-			arrayNumbers: generateRandomArray(size),
+			arrayNumbers: array,
+			solvable: countInversions(array, snail) % 2 === 0,
 			loading: false,
 		});
 	}, []);
@@ -46,11 +51,13 @@ const NPuzzle = () => {
 	};
 
 	const setNewPuzzle = (size, array) => {
+		const snail = computeSnailIteration(size);
 		setState({
 			...state,
-			snail: computeSnailIteration(size),
+			snail: snail,
 			size: size,
 			arrayNumbers: array,
+			solvable: countInversions(array, snail) % 2 === 0,
 		});
 	};
 
@@ -69,6 +76,7 @@ const NPuzzle = () => {
 		<div className={classes.Npuzzle}>
 			<PuzzleCommands createNewPuzzle={setNewPuzzle} />
 			{board}
+			<Solver arrayNumbers={state.arrayNumbers} size={state.size} snail={state.snail} solvable={state.solvable} />
 		</div>
 	)
 };
