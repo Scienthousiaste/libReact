@@ -1,6 +1,10 @@
 import { MAX_PUZZLE_SIZE } from '../../../../helpers/Npuzzle/defines';
+
 import React, { Component } from 'react';
+
 import classes from './PuzzleParser.less';
+
+import Input from '../../../UI/Input/Input';
 
 class PuzzleParser extends Component {
 	state = {
@@ -77,7 +81,7 @@ class PuzzleParser extends Component {
 		return (
 			<div className={classes.PuzzleInput}>
 				<p>Input a puzzle here: </p>
-				<textarea value={this.state.input} onChange={this.changeHandler}/>
+				<Input elementType={'textarea'} value={this.state.input} changed={this.changeHandler} />
 				<button onClick={this.parseInput}>Parse puzzle</button>
 			</div>
 		)
