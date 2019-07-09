@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 import classes from './style/App.less';
 
-import NPuzzleApp from './components/NPuzzleApp/NPuzzleApp';
+import NPuzzle from './components/NPuzzle/NPuzzle';
 
 const App = () => {
 
         return (
             <div className={classes.App}>
-				<NPuzzleApp />
+				<NPuzzle />
             </div>
         );
 };
