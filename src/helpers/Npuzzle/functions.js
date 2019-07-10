@@ -7,9 +7,20 @@ export const shuffle = (a) => {
 	return a;
 };
 
-export const generateRandomArray = (size) => (
-	shuffle([...Array(size * size).keys()])
-);
+export const generateRandomArray = (size, solvable) => {
+	let snail = computeSnailIteration(size);
+
+	while (1) {
+		let arr = shuffle([...Array(size * size).keys()]);
+		if (solvable && countInversions(arr, snail) % 2 !== 0) {
+			continue;
+		}
+		else if (solvable === false && countInversions(arr, snail) % 2 !== 1) {
+			continue;
+		}
+		return arr;
+	}
+};
 
 export const computeSnailIteration = (size) => {
 	if (size < 2) return [];
