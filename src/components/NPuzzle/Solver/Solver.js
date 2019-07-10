@@ -22,11 +22,8 @@ exit
 from correction
 Output correctness
 The students have the output required by the subject, which is:
-
 	- Complexity in time
-
 	- Complexity in size
-
 	- Number of moves from initial state to solution
 
 - Ordered sequence of states that make up the solution
@@ -44,32 +41,69 @@ il faut accepter des fichiers en theorie... > node ?
 	// heuristiques : conflits lineaires
 */
 
+const displayMessage = (msg) => {
+	alert(msg);
+}
+
 
 const solver = (props) => {
 
-	const solve = (arr, snail) => {
-		alert(computeManhattanDistance());
+	const solve = (pb) => {
+		let max_size = 0;
+		let n_iter = 0;
+
+		pb.idxZero = pb.arr.indexOf(0);
+		if (pb.idxZero === -1) {
+			displayMessage("Error: no zero found in the puzzle");
+			return ;
+		}
+
+		let queue = accessibleStates(pb);
+		console.log("queue: ", queue);
+			/*
+		while (queue.length > 0) {
+			queue.pop();
+		}
+		*/
+
 	};
 
-	//TODO : comparer performances avec differentes versions de computeManhattanDistance
 
-	const computeManhattanDistance = () => {
+	const accessibleStates = (pb) => {
+		let ret = [];
+		[1, -1, pb.size, -pb.size].forEach(x => {
+			let newIdx = pb.idxZero + x;
+			if ((newIdx >= 0 && newIdx < pb.arr.length
+					&& !((pb.idxZero % pb.size === pb.size - 1) && (newIdx % pb.size === 0))
+					&& !((pb.idxZero % pb.size === 0) && (newIdx % pb.size) === (pb.size - 1)))) {
+				let newState = {arr:[...pb.arr], size: pb.size, idxZero:pb.idxZero + x};
+				newState.arr[pb.idxZero] = newState.arr[pb.idxZero + x];
+				newState.arr[pb.idxZero + x] = 0;
+				ret.push(newState);
+			}
+		})
+		return ret;
+	}
+
+	//TODO : comparer performances avec differentes versions de computeManhattanDistance
+	//TODO : get old manhattan distance and check if it goes up or down
+
+	const computeManhattanDistance = (arr) => {
 		let dist = 0;
-		for (let i = 0; i < props.arrayNumbers.length; i++) {
-			if (props.arrayNumbers[i] === 0) continue;
+		for (let i = 0; i < arr.length; i++) {
+			if (arr[i] === 0) continue;
 			const x_current = i % props.size;
 			const y_current = Math.floor(i / props.size);
-			const x_goal = props.snail[props.arrayNumbers[i] - 1] % props.size;
-			const y_goal = Math.floor(props.snail[props.arrayNumbers[i] - 1] / props.size);
-
+			const x_goal = props.snail[arr[i] - 1] % props.size;
+			const y_goal = Math.floor(props.snail[arr[i] - 1] / props.size);
 			dist += Math.abs(y_current - y_goal) + Math.abs(x_current - x_goal);
 		}
 		return dist;
 	}
 
 	return (
-		props.solvable ? <Button clicked={() => solve(props.arrayNumbers, props.snail)}>Solve</Button> :
-			<p>Unsolvable</p>
+		props.solvable	? <Button clicked={() => solve({arr: props.arrayNumbers, size: props.size, snail: props.snail})}>Solve</Button>
+						: <p>Unsolvable</p>
 	)
 };
 
