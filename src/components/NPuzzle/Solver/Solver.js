@@ -38,16 +38,16 @@ il faut accepter des fichiers en theorie... > node ?
 
 
 
-	// implémenter A*, puis weightedA* (beaucoup plus rapide)
-	// heuristiques : conflits lineaires
-	*/
+    // implémenter A*, puis weightedA* (beaucoup plus rapide)
+    // heuristiques : conflits lineaires
+    */
 
 const displayMessage = (msg) => {
-	alert(msg);
+    alert(msg);
 }
 
 
-	/*
+/*
 function A_Star(start, goal)
 
 openSet := {start}
@@ -73,126 +73,130 @@ while openSet is not empty
 			cameFrom[neighbor] := current
 		gScore[neighbor] := tentative_gScore
 		fScore[neighbor] := gScore[neighbor] + heuristic_cost_estimate(neighbor, goal)
-	
+
 		if neighbor not in openSet
 			openSet.Add(neighbor)
 	return failure
-*/
+	*/
 
 
 const solver = (props) => {
-	const size = props.size;
+    const size = props.size;
 
-	const solve = (puzzleData) => {
-		/*//TODO
+    const solve = (puzzleData) => {
+	/*//TODO
 		let max_size = 0;
 		let n_iter = 0;
 		*/
 
-		let openSet = new PriorityQueue();
-		let alreadyAccessedStates = {};
-		let initialState = {
-			arr: puzzleData.arr,
-			cost: computeManhattanDistance(puzzleData.arr),
-			idxZero: puzzleData.arr.indexOf(0)
-		};
-		
-		alreadyAccessedStates[initialState.arr.toString()] = initialState.cost;
+	let openSet = new PriorityQueue();
+	let alreadyAccessedStates = {};
+	let initialState = {
+	    arr: puzzleData.arr,
+	    cost: computeManhattanDistance(puzzleData.arr),
+	    idxZero: puzzleData.arr.indexOf(0)
+	};
 
-		if (puzzleData.idxZero === -1) {
-			displayMessage("Error: no zero found in the puzzle");
-			return ;
-		}
+	alreadyAccessedStates[initialState.arr.toString()] = initialState.cost;
 
-		const goalState = goalStateString(puzzleData); 
-		if (initialState.arr.toString() == goalState) {
+	if (puzzleData.idxZero === -1) {
+	    displayMessage("Error: no zero found in the puzzle");
+	    return ;
+	}
+
+	const goalState = goalStateString(puzzleData); 
+	if (initialState.arr.toString() == goalState) {
+	    alert("goal");
+	    return ;
+	}
+	accessibleStates(initialState, computeManhattanDistance).forEach(accessibleState => {
+	    openSet.enqueue(accessibleState, accessibleState.cost);
+	});
+
+
+	while (!openSet.isEmpty()) {
+	    let state = openSet.dequeue();
+	    let nextStates = accessibleStates(state.content, computeManhattanDistance);
+
+	    for (let i = 0; i < nextStates.length; i++) {
+		let accessibleState = nextStates[i];
+		if (!alreadyAccessedStates[accessibleState.arr.toString()]) {
+		    //TODO:  si v existe dans closedList (devrait etre bon) ou si v existe dans openList avec un cout inférieur (pas bon..)
+		    if (accessibleState.arr.toString() === goalState) {
+			console.log(openSet);
+			console.log(openSet.heap.length);
 			alert("goal");
 			return ;
+		    }
+		    alreadyAccessedStates[accessibleState.arr.toString()] = accessibleState.cost;
+		    openSet.enqueue(accessibleState, accessibleState.cost);
 		}
-		accessibleStates(initialState, computeManhattanDistance).forEach(accessibleState => {
-			openSet.enqueue(accessibleState, accessibleState.cost);
-		});
-
-
-		let test = 1; // test est a virer
-		while (!openSet.isEmpty() && test > 0) {
-			test--;
-			if (test == 0) {console.log(alreadyAccessedStates)};
-			let state = openSet.dequeue();
-
-			if (state.content.arr.toString() === goalState) {
-				alert("goal");
-				break;
-			}
-			accessibleStates(state.content, computeManhattanDistance).forEach(accessibleState => {
-				if (!alreadyAccessedStates[accessibleState.arr.toString()]) {
-					//check goal atteint ici ?
-					alreadyAccessedStates[accessibleState.arr.toString()] = accessibleState.cost;
-					openSet.enqueue(accessibleState, accessibleState.cost);
-				}
-			})
-		}
-
-	};
-
-	const goalStateString = (puzzleData) => { 
-		let arr = Array(puzzleData.snail.length);
-		for (let i = 0; i < arr.length - 1; i++) {
-			arr[puzzleData.snail[i]] = i + 1;
-		}
-		arr[puzzleData.snail[puzzleData.snail.length - 1]] = 0;
-		return arr.toString();	
-	};
-
-	const accessibleStates = (curState, computeCost) => {
-		//TODO(opti): computeCost => updateCost
-		let ret = [];
-		[1, -1, size, -size].forEach(x => {
-			let newIdx = curState.idxZero + x;
-			if ((newIdx >= 0 && newIdx < curState.arr.length
-				&& !((curState.idxZero % size === size - 1) && (newIdx % size === 0))
-				&& !((curState.idxZero % size === 0) && (newIdx % size) === (size - 1)))) {
-				
-				let newState = {
-					arr:[...curState.arr],
-					idxZero: curState.idxZero + x,
-				};
-				newState.arr[curState.idxZero] = newState.arr[curState.idxZero + x];
-				newState.arr[curState.idxZero + x] = 0;
-				newState.cost = 1 + 10 * computeCost(newState.arr); // Ces 1 et 5 determine la force du next step VS l'heuristique
-				ret.push(newState);
-			}
-		})
-		if (ret.length > 4){alert("ici, ouillle")};
-		return ret;
+	    }
 	}
+	alert("no solution");
+    };
 
-	//TODO : comparer performances avec differentes versions de computeManhattanDistance
-	//TODO : get old manhattan distance and check if it goes up or down
-
-	const computeManhattanDistance = (arr) => {
-		let dist = 0;
-		for (let i = 0; i < arr.length; i++) {
-			if (arr[i] === 0) continue;
-			const x_current = i % props.size;
-			const y_current = Math.floor(i / props.size);
-			const x_goal = props.snail[arr[i] - 1] % props.size;
-			const y_goal = Math.floor(props.snail[arr[i] - 1] / props.size);
-			dist += Math.abs(y_current - y_goal) + Math.abs(x_current - x_goal);
-		}
-		return dist;
+    const goalStateString = (puzzleData) => { 
+	let arr = Array(puzzleData.snail.length);
+	for (let i = 0; i < arr.length - 1; i++) {
+	    arr[puzzleData.snail[i]] = i + 1;
 	}
+	arr[puzzleData.snail[puzzleData.snail.length - 1]] = 0;
+	return arr.toString();	
+    };
 
+    const accessibleStates = (curState, computeCost) => {
+	//TODO(opti): computeCost => updateCost
+	//TODO:plutot que de la passer en pointeur, la fonction computeCost devrait etre dans l'objet solver
+	let ret = [];
+	let dir = [1, -1, size, -size];
+	
+	for (let i = 0; i < dir.length; i++) {
+	    let d = dir[i];
+	    let newIdx = curState.idxZero + d;
+	    if ((newIdx >= 0 && newIdx < curState.arr.length
+		&& !((curState.idxZero % size === size - 1) && (newIdx % size === 0))
+		&& !((curState.idxZero % size === 0) && (newIdx % size) === (size - 1)))) {
 
-	return (
-		<div>
-		{	
+		let newArr = [...curState.arr];
+		newArr[curState.idxZero] = newArr[curState.idxZero + d];
+		newArr[curState.idxZero + d] = 0;
+		const newState = {
+		    arr:newArr,
+		    idxZero: curState.idxZero + d,
+		    cost: 1 + 100 * computeCost(newArr)
+		}; // Ces 1 et 5 determine la force du next step VS l'heuristique
+		ret.push(newState);
+	    }
+	}
+	return ret;
+    }
+
+    //TODO : comparer performances avec differentes versions de computeManhattanDistance
+    //TODO : get old manhattan distance and check if it goes up or down
+
+    const computeManhattanDistance = (arr) => {
+	let dist = 0;
+	for (let i = 0; i < arr.length; i++) {
+	    if (arr[i] === 0) continue;
+	    const x_current = i % props.size;
+	    const y_current = Math.floor(i / props.size);
+	    const x_goal = props.snail[arr[i] - 1] % props.size;
+	    const y_goal = Math.floor(props.snail[arr[i] - 1] / props.size);
+	    dist += Math.abs(y_current - y_goal) + Math.abs(x_current - x_goal);
+	}
+	return dist;
+    }
+
+    return (
+	<div>
+	    {	
 		props.solvable	? <Button clicked={() => solve({arr: props.arrayNumbers, size: props.size, snail: props.snail})}>Solve</Button>
-						: <p>Unsolvable</p>
-		}
-		<Button clicked={() => alert(computeManhattanDistance(props.arrayNumbers))}>Manhattan Distance</Button>
-		</div>
-	)
+		    : <p>Unsolvable</p>
+	    }
+	    <Button clicked={() => alert(computeManhattanDistance(props.arrayNumbers))}>Manhattan Distance</Button>
+	</div>
+    )
 };
 
 export default solver;
