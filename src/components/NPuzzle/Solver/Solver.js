@@ -103,8 +103,8 @@ const Solver = (props) => {
 	useEffect(() => {
 		setState({
 			...state,
-			weight: 3,
-			heuristic: computeLinearConflicts,
+			weight: 20,
+			heuristic: computeManhattanDistance,
 		});
 	}, [snail, size, state]);
 
