@@ -60,10 +60,9 @@ const Solver = (props) => {
 	});
 
 	useEffect(() => {
-		console.log(snail);
 		setState({
 			...state,
-			weight: 1,
+			weight: 10,
 			heuristic: computeManhattanDistance,
 		});
 	}, [snail, size]);

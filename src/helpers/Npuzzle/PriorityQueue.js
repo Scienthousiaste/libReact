@@ -38,10 +38,13 @@ class MinPriorityQueue {
 		let [left, right] = [2 * currentIdx, 2 * currentIdx + 1];
 		let currentChildIdx = this.heap[right] && this.heap[right].priority < this.heap[left].priority ? right : left;
 		while (this.heap[currentChildIdx] && this.heap[currentIdx].priority > this.heap[currentChildIdx].priority) {
-			let currentNode = this.heap[currentIdx]
+			let currentNode = this.heap[currentIdx];
 			let currentChildNode = this.heap[currentChildIdx];
 			this.heap[currentChildIdx] = currentNode;
 			this.heap[currentIdx] = currentChildNode;
+			currentIdx = currentChildIdx;
+			[left, right] = [2 * currentIdx, 2 * currentIdx + 1];
+			currentChildIdx = this.heap[right] && this.heap[right].priority < this.heap[left].priority ? right : left;
 		}
 		return ret;
 	}
