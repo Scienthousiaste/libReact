@@ -2,8 +2,21 @@ import React from 'react';
 import classes from './Tile.less';
 
 const Tile = (props) => {
+
+    const tileClasses = [classes.Tile];
+
+    if (props.val) {
+    	switch (props.val % 2) {
+			case 0 : tileClasses.push(classes.Even); break;
+			case 1 : tileClasses.push(classes.Odd); break;
+			default : break;
+		}
+    } else {
+		tileClasses.push(classes.Null);
+	}
+
     return (
-        <div className={classes.Tile} onClick={() => props.clicked(props.val)} >
+        <div className={tileClasses.join(' ')} style={{'font-size': props.fontSize.toString() + 'px' }} onClick={() => props.clicked(props.val)} >
             {props.val === 0 ? '': props.val}
         </div>
     )

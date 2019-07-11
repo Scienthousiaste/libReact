@@ -1,12 +1,26 @@
 .Tile {
-    width: 30px;
-    height: 30px;
-
+    height: 100%;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    margin: 1px;
+    padding: 4px;
+    border: 1px solid black;
+    box-sizing: border-box;
 }
 
-.Tile:hover {
-    background-color: aqua;
+.Even {
+    background-image: url(../../../../assets/images/marble-black.jpeg);
+    color: #cccccc;
+}
+
+.Odd {
+    background-image: url(../../../../assets/images/marble-white.jpeg);
+    color: #000000;
+}
+
+.Null {
+    border: 1px solid transparent;
 }
