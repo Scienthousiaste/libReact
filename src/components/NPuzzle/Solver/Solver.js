@@ -21,6 +21,28 @@ search
 ◦ The puzzle may be unsolvable, in which case you have to inform the user and
 exit
 
+Linear Conflict + Manhattan Distance/Taxicab geometry 
+Two tiles ‘a’ and ‘b’ are in a linear conflict if they are in the same row or column ,also their goal positions are in the same row or column and the goal position of one of the tiles is blocked by the other tile in that row.
+
+Let’s take the following example
+
+n-P3
+
+In this instance we see that tile 4 and tile 1 are in a linear conflict since we see that tile 4 is in the path of the goal position of tile 1 in the same column or vice versa, also tile 8 and tile 7 are in a linear conflict as 8 stands in the path of the goal position of tile 7 in the same row. Hence here we see there are 2 linear conflicts.
+
+As we know that heuristic value is the value that gives a theoretical least value of the number of moves required to solve the problem we can see that one linear conflict causes two moves to be added to the final heuristic value(h) as one tile will have to move aside in order to make way for the tile that has the goal state behind the moved tile and then back resulting in 2 moves which retains the admissibility of the heuristic.
+
+Linear conflict is always combined with the Manhattan distance to get the heuristic value of that state and each linear conflict will add 2 moves to the Manhattan distance as explained above, so the ‘h’ value for the above state will be
+
+Manhattan distance + 2*number of linear conflicts
+Manhattan distance for the state is: 10
+Final h: 10 + 2*2= 14
+
+Linear Conflict combined with Manhattan distance is significantly way faster than the heuristics explained above and 4 x 4 puzzles can be solved using it in a decent amount of time.Just as the rest of the heuristics above we do not 
+
+
+
+
 
 from correction
 Output correctness
@@ -44,13 +66,32 @@ il faut accepter des fichiers en theorie... > node ?
 	// heuristiques : conflits lineaires
 	*/
 
-doTestsPriorityQueue();
+//doTestsPriorityQueue();
 
 const displayMessage = (msg) => {
 	alert(msg);
 }
 
+const retrievePath = (finalState) => {
+	console.log(finalState);
+	let path = [];
+	let curState = finalState;
+	while (curState != null) {
+		path.unshift(curState.arr);	
+		curState = curState.previousState;
+	}
+	console.log(path);
+}
+
+const foundSolution = (solutionState) => {
+	displayMessage("Found solution on step " + solutionState.step);
+	retrievePath(solutionState);
+	return 0;
+}
+
+
 const Solver = (props) => {
+	//TODO : permettre de changer le weight, permettre de changer l'heuristique, optimiser manhattanDistance
 	const size = props.size;
 	const snail = props.snail;
 
@@ -62,10 +103,11 @@ const Solver = (props) => {
 	useEffect(() => {
 		setState({
 			...state,
-			weight: 10,
-			heuristic: computeManhattanDistance,
+			weight: 3,
+			heuristic: computeLinearConflicts,
 		});
-	}, [snail, size]);
+	}, [snail, size, state]);
+
 
 	const solve = (puzzleData) => {
 		/*//TODO
@@ -79,7 +121,8 @@ const Solver = (props) => {
 			arr: puzzleData.arr,
 			cost: state.heuristic(puzzleData.arr),
 			idxZero: puzzleData.arr.indexOf(0),
-			step: 0
+			step: 0,
+			previousState: null
 		};
 
 		alreadyAccessedStates[initialState.arr.toString()] = initialState.cost;
@@ -91,19 +134,18 @@ const Solver = (props) => {
 
 		const goalState = goalStateString(puzzleData); 
 		if (initialState.arr.toString() === goalState) {
-			alert("goal");
+			displayMessage("This is already the solution state");
 			return ;
 		}
 
 		const accessibleStatesFromInitial = accessibleStates(initialState);
 		for (let i = 0; i < accessibleStatesFromInitial.length; i++) {
 			if (accessibleStatesFromInitial[i].arr.toString() === goalState) {
-				alert("Found solution on step " +accessibleStatesFromInitial[i].step);
-				return ;
+				return foundSolution(accessibleStatesFromInitial[i]);
 			}
 			openSet.enqueue(accessibleStatesFromInitial[i], accessibleStatesFromInitial[i].cost);
 		}
-		
+
 		while (!openSet.isEmpty()) {
 			let state = openSet.dequeue();
 			let nextStates = accessibleStates(state.content);
@@ -111,8 +153,7 @@ const Solver = (props) => {
 			for (let i = 0; i < nextStates.length; i++) {
 				let accessibleState = nextStates[i];
 				if (accessibleState.arr.toString() === goalState) {
-					alert("Found solution on step " + accessibleState.step);
-					return ;
+					return foundSolution(accessibleState);
 				}
 				if (!alreadyAccessedStates[accessibleState.arr.toString()]) {
 					//TODO:  si v existe dans closedList (devrait etre bon) ou si v existe dans openList avec un cout inférieur (pas bon..)
@@ -121,7 +162,7 @@ const Solver = (props) => {
 				}
 			}
 		}
-		alert("no solution");
+		displayMessage("There is no solution to this puzzle");
 	};
 
 	const goalStateString = (puzzleData) => { 
@@ -160,6 +201,7 @@ const Solver = (props) => {
 					idxZero: curState.idxZero + d,
 					cost: newStep + state.weight * state.heuristic(newArr),
 					step: newStep,
+					previousState: curState,
 				};
 				ret.push(newState);
 			}
@@ -183,6 +225,30 @@ const Solver = (props) => {
 		return dist;
 	}
 
+	const computeLinearConflicts = (arr) => {
+		let conflicts = 0;
+		for (let i = 0; i < arr.length - 1; i++) {
+			if (arr[i] == 0) continue;
+			const goalX = snail[arr[i] - 1] % size;
+			const goalY = Math.floor(snail[arr[i] - 1] / size);
+			const x = i % size;
+			const y = Math.floor(i / size);
+			if (x == goalX) {
+				for (let xx = x + 1; xx < size; xx++) {
+					const goalXX = snail[arr[y * size + xx]] % size;
+					if (goalXX == goalX) conflicts++;
+				}
+			}
+			if (y == goalY) {
+				for (let yy = y + 1; yy < size; yy++) {
+					const goalYY = Math.floor(snail[arr[yy * size + x]] / size);
+					if (goalYY == goalY) conflicts++;
+				}
+			}
+		}
+		return ((conflicts * 2) + computeManhattanDistance(arr));
+	}
+
 	return (
 		<div>
 			{	
@@ -190,6 +256,7 @@ const Solver = (props) => {
 					: <p>Unsolvable</p>
 			}
 			<Button clicked={() => alert(computeManhattanDistance(props.arrayNumbers))}>Manhattan Distance</Button>
+			<Button clicked={() => alert(computeLinearConflicts(props.arrayNumbers))}>Linear Conflicts</Button>
 		</div>
 	)
 };

@@ -19,7 +19,7 @@ const NPuzzle = () => {
 	});
 
 	useEffect(() => {
-		const size = 2;
+		const size = 5;
 		const array = generateRandomArray(size, true);
 		const snail = computeSnailIteration(size);
 		setState({
