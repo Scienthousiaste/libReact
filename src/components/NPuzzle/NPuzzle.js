@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-
 import classes from './NPuzzle.less';
 
 import {computeSnailIteration, countInversions, generateRandomArray} from '../../helpers/Npuzzle/functions';

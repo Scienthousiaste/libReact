@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-import PriorityQueue from '../../../helpers/Npuzzle/PriorityQueue.js'
+import PriorityQueue from '../../../helpers/Npuzzle/PriorityQueue'
 import Button from '../../UI/Button/Button';
+
+import doTestsPriorityQueue from '../../../tests/helpers/PriorityQueue.test'
 
 /*
 The user must be able to choose between at LEAST 3 (relevant) heuristic functions.
@@ -42,6 +44,8 @@ il faut accepter des fichiers en theorie... > node ?
 	// heuristiques : conflits lineaires
 	*/
 
+doTestsPriorityQueue();
+
 const displayMessage = (msg) => {
 	alert(msg);
 }
@@ -56,12 +60,13 @@ const Solver = (props) => {
 	});
 
 	useEffect(() => {
+		console.log(snail);
 		setState({
 			...state,
 			weight: 1,
 			heuristic: computeManhattanDistance,
 		});
-	}, []);
+	}, [snail, size]);
 
 	const solve = (puzzleData) => {
 		/*//TODO
@@ -73,7 +78,7 @@ const Solver = (props) => {
 		let alreadyAccessedStates = {};
 		let initialState = {
 			arr: puzzleData.arr,
-			cost: computeManhattanDistance(puzzleData.arr),
+			cost: state.heuristic(puzzleData.arr),
 			idxZero: puzzleData.arr.indexOf(0),
 			step: 0
 		};
@@ -90,10 +95,16 @@ const Solver = (props) => {
 			alert("goal");
 			return ;
 		}
-		accessibleStates(initialState).forEach(accessibleState => {
-			openSet.enqueue(accessibleState, accessibleState.cost);
-		});
 
+		const accessibleStatesFromInitial = accessibleStates(initialState);
+		for (let i = 0; i < accessibleStatesFromInitial.length; i++) {
+			if (accessibleStatesFromInitial[i].arr.toString() === goalState) {
+				alert("Found solution on step " +accessibleStatesFromInitial[i].step);
+				return ;
+			}
+			openSet.enqueue(accessibleStatesFromInitial[i], accessibleStatesFromInitial[i].cost);
+		}
+		
 		while (!openSet.isEmpty()) {
 			let state = openSet.dequeue();
 			let nextStates = accessibleStates(state.content);
@@ -101,7 +112,6 @@ const Solver = (props) => {
 			for (let i = 0; i < nextStates.length; i++) {
 				let accessibleState = nextStates[i];
 				if (accessibleState.arr.toString() === goalState) {
-					console.log(openSet.heap.length);
 					alert("Found solution on step " + accessibleState.step);
 					return ;
 				}
@@ -149,13 +159,12 @@ const Solver = (props) => {
 				const newState = {
 					arr:newArr,
 					idxZero: curState.idxZero + d,
-					cost: newStep + state.weight * computeManhattanDistance(newArr),
+					cost: newStep + state.weight * state.heuristic(newArr),
 					step: newStep,
 				};
 				ret.push(newState);
 			}
 		}
-		console.log("AccessibleStates : ", ret);
 		return ret;
 	};
 

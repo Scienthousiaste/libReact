@@ -35,7 +35,7 @@ class MinPriorityQueue {
 		const ret = this.heap[1];
 		this.heap[1] = this.heap.pop();
 		let currentIdx = 1;
-		let [left, right] = [2*currentIdx, 2*currentIdx + 1];
+		let [left, right] = [2 * currentIdx, 2 * currentIdx + 1];
 		let currentChildIdx = this.heap[right] && this.heap[right].priority < this.heap[left].priority ? right : left;
 		while (this.heap[currentChildIdx] && this.heap[currentIdx].priority > this.heap[currentChildIdx].priority) {
 			let currentNode = this.heap[currentIdx]
