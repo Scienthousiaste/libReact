@@ -93,24 +93,20 @@ const Solver = (props) => {
 		accessibleStates(initialState).forEach(accessibleState => {
 			openSet.enqueue(accessibleState, accessibleState.cost);
 		});
-		console.log(openSet);
 
 		while (!openSet.isEmpty()) {
 			let state = openSet.dequeue();
-			/*			if (state.content.step > 1) { // pour eviter loop infinie
-				return ;
-			}*/
 			let nextStates = accessibleStates(state.content);
 
 			for (let i = 0; i < nextStates.length; i++) {
 				let accessibleState = nextStates[i];
+				if (accessibleState.arr.toString() === goalState) {
+					console.log(openSet.heap.length);
+					alert("Found solution on step " + accessibleState.step);
+					return ;
+				}
 				if (!alreadyAccessedStates[accessibleState.arr.toString()]) {
 					//TODO:  si v existe dans closedList (devrait etre bon) ou si v existe dans openList avec un cout inférieur (pas bon..)
-					if (accessibleState.arr.toString() === goalState) {
-						console.log(openSet.heap.length);
-						alert("Found solution on step " + accessibleState.step);
-						return ;
-					}
 					alreadyAccessedStates[accessibleState.arr.toString()] = accessibleState.cost;
 					openSet.enqueue(accessibleState, accessibleState.cost);
 				}
@@ -137,9 +133,14 @@ const Solver = (props) => {
 		for (let i = 0; i < dir.length; i++) {
 			let d = dir[i];
 			let newIdx = curState.idxZero + d;
-			if ((newIdx >= 0 && newIdx < curState.arr.length
-				&& !((curState.idxZero % size === size - 1) && (newIdx % size === 0))
-				&& !((curState.idxZero % size === 0) && (newIdx % size === size - 1)))) {
+
+			let x_cur_zero = curState.idxZero % size;
+			let y_cur_zero = Math.floor(curState.idxZero / size); 
+			let x_new_zero = newIdx % size;
+			let y_new_zero = Math.floor(newIdx / size);
+
+			if (!(newIdx < 0 || newIdx >= curState.arr.length
+				|| (x_cur_zero !== x_new_zero && y_cur_zero !== y_new_zero))) {
 
 				let newStep = curState.step + 1;
 				let newArr = [...curState.arr];
@@ -154,6 +155,7 @@ const Solver = (props) => {
 				ret.push(newState);
 			}
 		}
+		console.log("AccessibleStates : ", ret);
 		return ret;
 	};
 
