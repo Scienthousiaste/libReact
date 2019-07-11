@@ -73,7 +73,7 @@ const Solver = (props) => {
 		let alreadyAccessedStates = {};
 		let initialState = {
 			arr: puzzleData.arr,
-			cost: computeManhattanDistance(puzzleData.arr, snail),
+			cost: computeManhattanDistance(puzzleData.arr),
 			idxZero: puzzleData.arr.indexOf(0),
 			step: 0
 		};
@@ -93,7 +93,7 @@ const Solver = (props) => {
 		accessibleStates(initialState).forEach(accessibleState => {
 			openSet.enqueue(accessibleState, accessibleState.cost);
 		});
-
+		console.log(openSet);
 
 		while (!openSet.isEmpty()) {
 			let state = openSet.dequeue();
@@ -139,7 +139,7 @@ const Solver = (props) => {
 			let newIdx = curState.idxZero + d;
 			if ((newIdx >= 0 && newIdx < curState.arr.length
 				&& !((curState.idxZero % size === size - 1) && (newIdx % size === 0))
-				&& !((curState.idxZero % size === 0) && (newIdx % size) === (size - 1)))) {
+				&& !((curState.idxZero % size === 0) && (newIdx % size === size - 1)))) {
 
 				let newStep = curState.step + 1;
 				let newArr = [...curState.arr];
@@ -148,14 +148,14 @@ const Solver = (props) => {
 				const newState = {
 					arr:newArr,
 					idxZero: curState.idxZero + d,
-					cost: newStep + state.weight * computeManhattanDistance(newArr, props.snail),
+					cost: newStep + state.weight * computeManhattanDistance(newArr),
 					step: newStep,
 				};
 				ret.push(newState);
 			}
 		}
 		return ret;
-	}
+	};
 
 	//TODO : comparer performances avec differentes versions de computeManhattanDistance
 	//TODO : get old manhattan distance and check if it goes up or down
