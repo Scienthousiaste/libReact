@@ -5,7 +5,7 @@ import classes from './Input.css';
 
 const input = (props) => {
 
-	const inputElemClasses =[classes.InputElem];
+	const inputElemClasses = [classes.InputElem];
 
 	if (props.invalid) {
 		inputElemClasses.push(classes.Invalid);
@@ -14,7 +14,25 @@ const input = (props) => {
 	const keyPressHandler = (event) => {
 		switch (event.key) {
 			case 'Enter':
-				if (props.pressEnter) props.pressEnter();
+				if (props.pressEnter) {
+					event.preventDefault();
+					props.pressEnter();
+				}
+				break;
+			case 'ArrowDown' :
+				if (props.pressDown) {
+					event.preventDefault();
+					props.pressDown();
+				}
+				break;
+			case 'ArrowUp' :
+				if (props.pressUp) {
+					event.preventDefault();
+					props.pressUp();
+				}
+				break;
+			default :
+				return;
 		}
 	};
 
@@ -26,7 +44,7 @@ const input = (props) => {
 				{...props.elementConfig}
 				value={props.value}
 				onChange={props.changed}
-				onKeyDown={keyPressHandler} />
+				onKeyDown={keyPressHandler}/>
 		},
 		{
 			type: 'textarea',
@@ -35,7 +53,7 @@ const input = (props) => {
 				{...props.elementConfig}
 				value={props.value}
 				onChange={props.changed}
-				onKeyDown={keyPressHandler} />
+				onKeyDown={keyPressHandler}/>
 		},
 		{
 			type: 'select',
@@ -45,7 +63,7 @@ const input = (props) => {
 					{...props.elementConfig}
 					value={props.value}
 					onChange={props.changed}
-					onKeyDown={keyPressHandler} >
+					onKeyDown={keyPressHandler}>
 					{props.options ? props.options.map((option) => (
 						<option key={option.value} value={option.value}>{option.displayValue}</option>
 					)) : null}
@@ -63,7 +81,7 @@ const input = (props) => {
 			{...props.elementConfig}
 			value={props.value}
 			onChange={props.changed}
-			onKeyDown={keyPressHandler} />;
+			onKeyDown={keyPressHandler}/>;
 	}
 
 	return (

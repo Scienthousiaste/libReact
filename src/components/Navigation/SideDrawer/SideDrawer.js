@@ -15,9 +15,7 @@ const sideDrawer = (props) => {
 
 	return (
 		<Aux>
-			<Media query="(max-width: 599px)">
-				<Backdrop show={props.show} clicked={props.closed}/>
-			</Media>
+			<Backdrop show={props.show} clicked={props.closed}/>
 			<div className={attachedClasses.join(' ')}>
 
 			</div>
