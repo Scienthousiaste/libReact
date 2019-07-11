@@ -1,1 +1,1 @@
-export const MAX_PUZZLE_SIZE = 30;
+export const MAX_PUZZLE_SIZE = 20;
