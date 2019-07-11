@@ -17,7 +17,9 @@ const PuzzleGenerator = (props) => {
 		const value = event.target.value;
 		if (isNaN(value)) return;
 		if (value) {
-			setState({ ...state, size: parseInt(value) });
+			let size = parseInt(value);
+			if (size > 20) {size = 20}
+			setState({ ...state, size: size });
 		} else {
 			setState({ ...state, size: 0 });
 		}
@@ -27,9 +29,25 @@ const PuzzleGenerator = (props) => {
 		props.createNewPuzzle(state.size, generateRandomArray(state.size));
 	};
 
+	const onUpgradeHandler = () => {
+		const size = state.size;
+
+		if (size < 20) {
+			setState({ ...state, size: size + 1 });
+		}
+	};
+
+	const onDowngradeHandler = () => {
+		const size = state.size;
+
+		if (size > 0) {
+			setState({ ...state, size: size - 1 });
+		}
+	};
+
 	return (
 		<div className={classes.PuzzleGenerator}>
-			<Input value={state.size} changed={changeSizeHandler} pressEnter={onClickHandler} />
+			<Input value={state.size} changed={changeSizeHandler} pressEnter={onClickHandler} pressUp={onUpgradeHandler} pressDown={onDowngradeHandler} />
 			<Button clicked={onClickHandler}>Generate</Button>
 		</div>
 	);
