@@ -11,7 +11,7 @@ const SolverCommands = (props) => {
 	const options = [...props.heuristics];
 	options[props.selectedHeuristic]['selected'] = true;
 
-	const changeSizeHandler = (event) => {
+	const changeWeightHandler = (event) => {
 		const value = event.target.value;
 		if (isNaN(value)) return;
 		if (value) {
@@ -45,7 +45,7 @@ const SolverCommands = (props) => {
 		<div className={classes.SolverCommands}>
 			<Radio name={'heuristic'} options={options} clicked={(elem) => props.heuristicChanged(elem)}/>
 			<Input value={props.weight}
-				   changed={changeSizeHandler}
+				   changed={changeWeightHandler}
 				   pressUp={onUpgradeHandler}
 				   pressDown={onDowngradeHandler}/>
 		</div>

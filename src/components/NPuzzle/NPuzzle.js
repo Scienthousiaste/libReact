@@ -9,7 +9,6 @@ import PuzzleInfos from './PuzzleInfos/PuzzleInfos';
 import PuzzleCommands from './PuzzleCommands/PuzzleCommands';
 import Solver from './Solver/Solver';
 
-
 const NPuzzle = () => {
 	const [state, setState] = useState({
 		snail: null,
@@ -28,7 +27,7 @@ const NPuzzle = () => {
 
 	const [playParams, setPlayParams] = useState({
 		pause: false,
-		time: 100,
+		time: 60,
 	});
 
 	useEffect(() => {
@@ -110,7 +109,6 @@ const NPuzzle = () => {
 	return (
 		<div className={classes.Npuzzle}>
 			<PuzzleCommands createNewPuzzle={setNewPuzzle} />
-
 			{board}
 			<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail} solvable={state.solvable}
 					resolved={onResolveHandler} />
