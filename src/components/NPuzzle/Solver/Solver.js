@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-import PriorityQueue from '../../../helpers/Npuzzle/PriorityQueue'
 import Button from '../../UI/Button/Button';
 
-import doTestsPriorityQueue from '../../../tests/helpers/NPuzzle/PriorityQueue.test'
+import doTestsPriorityQueue from '../../../tests/helpers/NPuzzle/PriorityQueue.test';
+import { computeLinearConflicts, computeManhattanDistance, solve } from '../../../algorithms/Npuzzle/algorithm';
 
 /*
 The user must be able to choose between at LEAST 3 (relevant) heuristic functions.
@@ -70,24 +70,10 @@ doTestsPriorityQueue();
 
 const displayMessage = (msg) => {
 	alert(msg);
-}
+};
 
-const retrievePath = (finalState) => {
-	console.log(finalState);
-	let path = [];
-	let curState = finalState;
-	while (curState != null) {
-		path.unshift(curState.arr);	
-		curState = curState.previousState;
-	}
-	console.log(path);
-}
 
-const foundSolution = (solutionState) => {
-	displayMessage("Found solution on step " + solutionState.step);
-	retrievePath(solutionState);
-	return 0;
-}
+
 
 
 const Solver = (props) => {
@@ -102,161 +88,23 @@ const Solver = (props) => {
 
 	useEffect(() => {
 		setState({
-			...state,
 			weight: 20,
 			heuristic: computeManhattanDistance,
 		});
-	}, [snail, size, state]);
+	}, [snail, size, computeManhattanDistance]);
 
 
-	const solve = (puzzleData) => {
-		/*//TODO
-		let max_size = 0;
-		let n_iter = 0;
-		*/
 
-		let openSet = new PriorityQueue();
-		let alreadyAccessedStates = {};
-		let initialState = {
-			arr: puzzleData.arr,
-			cost: state.heuristic(puzzleData.arr),
-			idxZero: puzzleData.arr.indexOf(0),
-			step: 0,
-			previousState: null
-		};
 
-		alreadyAccessedStates[initialState.arr.toString()] = initialState.cost;
-
-		if (puzzleData.idxZero === -1) {
-			displayMessage("Error: no zero found in the puzzle");
-			return ;
-		}
-
-		const goalState = goalStateString(puzzleData); 
-		if (initialState.arr.toString() === goalState) {
-			displayMessage("This is already the solution state");
-			return ;
-		}
-
-		const accessibleStatesFromInitial = accessibleStates(initialState);
-		for (let i = 0; i < accessibleStatesFromInitial.length; i++) {
-			if (accessibleStatesFromInitial[i].arr.toString() === goalState) {
-				return foundSolution(accessibleStatesFromInitial[i]);
-			}
-			openSet.enqueue(accessibleStatesFromInitial[i], accessibleStatesFromInitial[i].cost);
-		}
-
-		while (!openSet.isEmpty()) {
-			let state = openSet.dequeue();
-			let nextStates = accessibleStates(state.content);
-
-			for (let i = 0; i < nextStates.length; i++) {
-				let accessibleState = nextStates[i];
-				if (accessibleState.arr.toString() === goalState) {
-					return foundSolution(accessibleState);
-				}
-				if (!alreadyAccessedStates[accessibleState.arr.toString()]) {
-					//TODO:  si v existe dans closedList (devrait etre bon) ou si v existe dans openList avec un cout inférieur (pas bon..)
-					alreadyAccessedStates[accessibleState.arr.toString()] = accessibleState.cost;
-					openSet.enqueue(accessibleState, accessibleState.cost);
-				}
-			}
-		}
-		displayMessage("There is no solution to this puzzle");
-	};
-
-	const goalStateString = (puzzleData) => { 
-		let arr = Array(puzzleData.snail.length);
-		for (let i = 0; i < arr.length - 1; i++) {
-			arr[puzzleData.snail[i]] = i + 1;
-		}
-		arr[puzzleData.snail[puzzleData.snail.length - 1]] = 0;
-		return arr.toString();	
-	};
-
-	const accessibleStates = (curState) => {
-		//TODO(opti): computeCost => updateCost
-		//TODO:plutot que de la passer en pointeur, la fonction computeCost devrait etre dans l'objet solver
-		let ret = [];
-		let dir = [1, -1, size, -size];
-
-		for (let i = 0; i < dir.length; i++) {
-			let d = dir[i];
-			let newIdx = curState.idxZero + d;
-
-			let x_cur_zero = curState.idxZero % size;
-			let y_cur_zero = Math.floor(curState.idxZero / size); 
-			let x_new_zero = newIdx % size;
-			let y_new_zero = Math.floor(newIdx / size);
-
-			if (!(newIdx < 0 || newIdx >= curState.arr.length
-				|| (x_cur_zero !== x_new_zero && y_cur_zero !== y_new_zero))) {
-
-				let newStep = curState.step + 1;
-				let newArr = [...curState.arr];
-				newArr[curState.idxZero] = newArr[curState.idxZero + d];
-				newArr[curState.idxZero + d] = 0;
-				const newState = {
-					arr:newArr,
-					idxZero: curState.idxZero + d,
-					cost: newStep + state.weight * state.heuristic(newArr),
-					step: newStep,
-					previousState: curState,
-				};
-				ret.push(newState);
-			}
-		}
-		return ret;
-	};
-
-	//TODO : comparer performances avec differentes versions de computeManhattanDistance
-	//TODO : get old manhattan distance and check if it goes up or down
-
-	const computeManhattanDistance = (arr) => {
-		let dist = 0;
-		for (let i = 0; i < arr.length; i++) {
-			if (arr[i] === 0) continue;
-			const x_current = i % size;
-			const y_current = Math.floor(i / size);
-			const x_goal = snail[arr[i] - 1] % size;
-			const y_goal = Math.floor(snail[arr[i] - 1] / size);
-			dist += Math.abs(y_current - y_goal) + Math.abs(x_current - x_goal);
-		}
-		return dist;
-	}
-
-	const computeLinearConflicts = (arr) => {
-		let conflicts = 0;
-		for (let i = 0; i < arr.length - 1; i++) {
-			if (arr[i] == 0) continue;
-			const goalX = snail[arr[i] - 1] % size;
-			const goalY = Math.floor(snail[arr[i] - 1] / size);
-			const x = i % size;
-			const y = Math.floor(i / size);
-			if (x == goalX) {
-				for (let xx = x + 1; xx < size; xx++) {
-					const goalXX = snail[arr[y * size + xx]] % size;
-					if (goalXX == goalX) conflicts++;
-				}
-			}
-			if (y == goalY) {
-				for (let yy = y + 1; yy < size; yy++) {
-					const goalYY = Math.floor(snail[arr[yy * size + x]] / size);
-					if (goalYY == goalY) conflicts++;
-				}
-			}
-		}
-		return ((conflicts * 2) + computeManhattanDistance(arr));
-	}
 
 	return (
 		<div>
 			{	
-				props.solvable	? <Button clicked={() => solve({arr: props.arrayNumbers, size: props.size, snail: props.snail})}>Solve</Button>
+				props.solvable	? <Button clicked={() => solve({arr: props.arrayNumbers, size: props.size, snail: props.snail, weight: state.weight, heuristic: state.heuristic})}>Solve</Button>
 					: <p>Unsolvable</p>
 			}
-			<Button clicked={() => alert(computeManhattanDistance(props.arrayNumbers))}>Manhattan Distance</Button>
-			<Button clicked={() => alert(computeLinearConflicts(props.arrayNumbers))}>Linear Conflicts</Button>
+			<Button clicked={() => alert(computeManhattanDistance(props.arrayNumbers, props.size, props.snail))}>Manhattan Distance</Button>
+			<Button clicked={() => alert(computeLinearConflicts(props.arrayNumbers, props.size, props.snail))}>Linear Conflicts</Button>
 		</div>
 	)
 };

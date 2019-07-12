@@ -16,7 +16,7 @@ const Tile = (props) => {
 	}
 
     return (
-        <div className={tileClasses.join(' ')} style={{'font-size': props.fontSize.toString() + 'px' }} onClick={() => props.clicked(props.val)} >
+        <div className={tileClasses.join(' ')} style={{fontSize: props.fontSize.toString() + 'px' }} onClick={() => props.clicked(props.val)} >
             {props.val === 0 ? '': props.val}
         </div>
     )

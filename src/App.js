@@ -13,9 +13,10 @@ const App = () => {
 	return (
 		<BrowserRouter>
 			<Layout>
-
 				<div className={classes.App}>
-					<NPuzzle/>
+					<Switch>
+					<Route path={'/'} component={NPuzzle} />
+					</Switch>
 				</div>
 			</Layout>
 		</BrowserRouter>

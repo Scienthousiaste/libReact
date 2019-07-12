@@ -2,11 +2,10 @@ import React, {useState, useEffect} from 'react';
 
 import classes from './SolverCommands.less';
 
-import Radio from '../../../UI/Radio/Radio';
+//import Radio from '../../../UI/Radio/Radio';
 
 const SolverCommands = (props) => {
 
-	props
 
 	return (
 		<div className={classes.SolverCommand}>

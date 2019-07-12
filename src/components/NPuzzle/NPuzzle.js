@@ -24,7 +24,6 @@ const NPuzzle = () => {
 		const array = generateRandomArray(size, true);
 		const snail = computeSnailIteration(size);
 		setState({
-			...state,
 			snail: snail,
 			size: size,
 			arrayNumbers: array,
