@@ -180,13 +180,12 @@ const retrievePath = (finalState) => {
 		path.unshift(curState.arr);
 		curState = curState.previousState;
 	}
-	console.log(path);
+	return path;
 };
 
 const foundSolution = (solutionState) => {
-	displayMessage("Found solution on step " + solutionState.step);
-	retrievePath(solutionState);
-	return 0;
+	// displayMessage("Found solution on step " + solutionState.step);
+	return retrievePath(solutionState);
 };
 
 doTestsPriorityQueue();

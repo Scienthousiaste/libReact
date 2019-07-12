@@ -53,7 +53,10 @@ const input = (props) => {
 				{...props.elementConfig}
 				value={props.value}
 				onChange={props.changed}
-				onKeyDown={keyPressHandler}/>
+				onKeyDown={keyPressHandler}
+				rows={props.rows}
+				cols={props.cols}
+			/>
 		},
 		{
 			type: 'select',

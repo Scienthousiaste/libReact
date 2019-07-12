@@ -14,9 +14,21 @@ const NPuzzle = () => {
 	const [state, setState] = useState({
 		snail: null,
 		size: 0,
-		arrayNumbers: null,
 		solvable: false,
 		loading: true,
+	});
+
+	const [arrayState, setArrayState] = useState(null);
+
+	const [playState, setPlayState] = useState({
+		play: false,
+		arrays: null,
+		currentIndex: 0,
+	});
+
+	const [playParams, setPlayParams] = useState({
+		pause: false,
+		time: 100,
 	});
 
 	useEffect(() => {
@@ -26,25 +38,49 @@ const NPuzzle = () => {
 		setState({
 			snail: snail,
 			size: size,
-			arrayNumbers: array,
 			solvable: countInversions(array, snail) % 2 === 0,
 			loading: false,
 		});
+		setArrayState(array);
 	}, []);
 
+	useEffect(() => {
+		if (playState.arrays
+			&& !playParams.pause
+			&& playState.currentIndex + 1 < playState.arrays.length) {
+			setTimeout(() => {
+				const newIndex =  playState.currentIndex + 1;
+				setPlayState({
+					...playState,
+					currentIndex: newIndex,
+				});
+				setArrayState(playState.arrays[newIndex]);
+			}, playParams.time);
+		}
+	}, [playState, playParams]);
+
+	const onResolveHandler = (arrays) => {
+		setPlayState({
+			play: true,
+			arrays: arrays,
+			currentIndex: 0,
+		});
+		console.log(arrays)
+	};
+
 	const trySwap = (value) => {
-		let idx = state.arrayNumbers.findIndex((element) => element === value);
+		let idx = arrayState.findIndex((element) => element === value);
 		if (idx !== -1 && value !== 0) {
-			const idxZero = state.arrayNumbers.findIndex((element) => element === 0);
+			const idxZero = arrayState.findIndex((element) => element === 0);
 			if (((idxZero === idx + 1) && (idxZero % state.size !== 0))
 				|| ((idxZero === idx - 1) && (idxZero % state.size !== state.size - 1))
 				|| idxZero === idx + state.size
 				|| idxZero === idx - state.size) {
 
-				const newArr = [...state.arrayNumbers];
-				newArr[idx] = state.arrayNumbers[idxZero];
-				newArr[idxZero] = state.arrayNumbers[idx];
-				setState({...state, arrayNumbers: newArr});
+				const newArr = [...arrayState];
+				newArr[idx] = arrayState[idxZero];
+				newArr[idxZero] = arrayState[idx];
+				setArrayState(newArr);
 			}
 		}
 	};
@@ -55,9 +91,9 @@ const NPuzzle = () => {
 			...state,
 			snail: snail,
 			size: size,
-			arrayNumbers: array,
 			solvable: countInversions(array, snail) % 2 === 0,
 		});
+		setArrayState(array);
 	};
 
 	let board = <Spinner/>;
@@ -65,17 +101,19 @@ const NPuzzle = () => {
 	if (!state.loading) {
 		board = (
 			<div className={classes.Board}>
-				<TileSet arrayNumbers={state.arrayNumbers} size={state.size} clicked={trySwap}/>
-				<PuzzleInfos arrayNumbers={state.arrayNumbers} snail={state.snail}/>
+				<TileSet arrayNumbers={arrayState} size={state.size} clicked={trySwap}/>
+				<PuzzleInfos arrayNumbers={arrayState} snail={state.snail}/>
 			</div>
 		);
 	}
 
 	return (
 		<div className={classes.Npuzzle}>
-			<PuzzleCommands createNewPuzzle={setNewPuzzle}/>
+			<PuzzleCommands createNewPuzzle={setNewPuzzle} />
+
 			{board}
-			<Solver arrayNumbers={state.arrayNumbers} size={state.size} snail={state.snail} solvable={state.solvable}/>
+			<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail} solvable={state.solvable}
+					resolved={onResolveHandler} />
 		</div>
 	)
 };

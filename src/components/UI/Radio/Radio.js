@@ -15,6 +15,7 @@ const radio = (props) => {
 				   key={key}
 				   value={elem.value}
 				   name={props.name}
+				   checked={elem.selected}
 				   id={elem.id ? elem.id : elem.value}
 				   onClick={() => onClickHandler(key)}
 			/>
@@ -24,6 +25,7 @@ const radio = (props) => {
 
 	return (
 		<div className={classes.Radios}>
+			{ props.verbose ? <h4>{props.verbose}</h4> : null }
 			{radios}
 		</div>
 	);

@@ -13,6 +13,10 @@ const PuzzleGenerator = (props) => {
 		size: 0,
 	});
 
+	const onClickHandler = () => {
+		props.createNewPuzzle(state.size, generateRandomArray(state.size));
+	};
+
 	const changeSizeHandler = (event) => {
 		const value = event.target.value;
 		if (isNaN(value)) return;
@@ -23,10 +27,6 @@ const PuzzleGenerator = (props) => {
 		} else {
 			setState({ ...state, size: 0 });
 		}
-	};
-
-	const onClickHandler = () => {
-		props.createNewPuzzle(state.size, generateRandomArray(state.size));
 	};
 
 	const onUpgradeHandler = () => {

@@ -2,14 +2,52 @@ import React, {useState, useEffect} from 'react';
 
 import classes from './SolverCommands.less';
 
-//import Radio from '../../../UI/Radio/Radio';
+import Radio from '../../../UI/Radio/Radio';
+import Input from '../../../UI/Input/Input';
 
 const SolverCommands = (props) => {
 
 
-	return (
-		<div className={classes.SolverCommand}>
+	const options = [...props.heuristics];
+	options[props.selectedHeuristic]['selected'] = true;
 
+	const changeSizeHandler = (event) => {
+		const value = event.target.value;
+		if (isNaN(value)) return;
+		if (value) {
+			let weight = parseInt(value);
+			if (weight > 10000) {
+				weight = 10000
+			}
+			props.weightChanged(weight);
+		} else {
+			props.weightChanged(0);
+		}
+	};
+
+	const onUpgradeHandler = () => {
+		const weight = props.weight;
+
+		if (weight < 10000) {
+			props.weightChanged(weight + 1);
+		}
+	};
+
+	const onDowngradeHandler = () => {
+		const weight = props.weight;
+
+		if (weight > 0) {
+			props.weightChanged(weight - 1);
+		}
+	};
+
+	return (
+		<div className={classes.SolverCommands}>
+			<Radio name={'heuristic'} options={options} clicked={(elem) => props.heuristicChanged(elem)}/>
+			<Input value={props.weight}
+				   changed={changeSizeHandler}
+				   pressUp={onUpgradeHandler}
+				   pressDown={onDowngradeHandler}/>
 		</div>
 	);
 };
