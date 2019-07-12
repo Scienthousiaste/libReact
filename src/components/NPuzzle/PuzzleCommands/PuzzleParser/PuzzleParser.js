@@ -27,11 +27,26 @@ const PuzzleParser = (props) => {
 		}
 		if (arr.length > 0) {
 			let candidateSize;
-			if (arr[0].split(' ').length === 1) {
-				candidateSize = parseInt(arr[0]);
-				arr = arr.slice(1, arr.length);
-			} else {
-				candidateSize = arr.length;
+
+			//TODO : ca
+			if (arr.length == 1) {
+				let numbers = arr[0].split(' ');
+					
+				candidateSize = Math.sqrt(numbers.length);
+				if (candidateSize - Math.floor(candidateSize) !== 0) {
+					displayMessage("incorrect number of values in a single row");
+					return;
+				}
+				//TODO: finir parsing ici
+			}
+
+			else {
+				if (arr[0].split(' ').length === 1) {
+					candidateSize = parseInt(arr[0]);
+					arr = arr.slice(1, arr.length);
+				} else {
+					candidateSize = arr.length;
+				}
 			}
 
 			if (isNaN(candidateSize)) {
