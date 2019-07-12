@@ -4,6 +4,7 @@ import classes from './SolverCommands.less';
 
 import Radio from '../../../UI/Radio/Radio';
 import Input from '../../../UI/Input/Input';
+import Box from '../../../UI/Box/Box';
 
 const SolverCommands = (props) => {
 
@@ -42,13 +43,15 @@ const SolverCommands = (props) => {
 	};
 
 	return (
-		<div className={classes.SolverCommands}>
-			<Radio name={'heuristic'} options={options} clicked={(elem) => props.heuristicChanged(elem)}/>
-			<Input value={props.weight}
-				   changed={changeWeightHandler}
-				   pressUp={onUpgradeHandler}
-				   pressDown={onDowngradeHandler}/>
-		</div>
+		<Box>
+			<div className={classes.SolverCommands}>
+				<Radio name={'heuristic'} options={options} clicked={(elem) => props.heuristicChanged(elem)}/>
+				<Input value={props.weight}
+					   changed={changeWeightHandler}
+					   pressUp={onUpgradeHandler}
+					   pressDown={onDowngradeHandler}/>
+			</div>
+		</Box>
 	);
 };
 

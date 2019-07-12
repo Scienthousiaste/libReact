@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 
 import Button from '../../UI/Button/Button';
+import Box from '../../UI/Box/Box';
 import SolverCommand from './SolverCommands/SolverCommands';
 
 import {computeLinearConflicts, computeManhattanDistance, solve} from '../../../algorithms/Npuzzle/algorithm';
@@ -51,7 +52,7 @@ const Solver = (props) => {
 		<div className={classes.Solver}>
 			<SolverCommand heuristics={heuristics} selectedHeuristic={state.selectedHeuristic} weight={state.weight}
 						   heuristicChanged={changeHeuristicHandler} weightChanged={changeWeightHandler}/>
-			<div className={classes.SolverFunctions}>
+			<Box>
 				{
 					props.solvable ? <Button clicked={resolveHandler}>Solve</Button>
 						: <p>Unsolvable</p>
@@ -60,7 +61,7 @@ const Solver = (props) => {
 					Distance</Button>
 				<Button clicked={() => alert(computeLinearConflicts(props.arrayNumbers, props.size, props.snail))}>Linear
 					Conflicts</Button>
-			</div>
+			</Box>
 		</div>
 	)
 };

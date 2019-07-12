@@ -5,14 +5,15 @@ import classes from './PuzzleCommands.less';
 import PuzzleParser from './PuzzleParser/PuzzleParser';
 import PuzzleGenerator from './PuzzleGenerator/PuzzleGenerator';
 import PlayParams from './PlayParams/PlayParams';
+import Box from '../../UI/Box/Box';
 
 
 const puzzleCommands = (props) => (
 	<div className={classes.PuzzleCommands}>
-		<div className={classes.PuzzleCreators}>
+		<Box >
 			<PuzzleParser createNewPuzzle={props.createNewPuzzle}/>
 			<PuzzleGenerator createNewPuzzle={props.createNewPuzzle}/>
-		</div>
+		</Box>
 		<PlayParams/>
 	</div>
 );
