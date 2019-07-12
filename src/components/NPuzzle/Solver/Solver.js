@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import PriorityQueue from '../../../helpers/Npuzzle/PriorityQueue'
 import Button from '../../UI/Button/Button';
 
-import doTestsPriorityQueue from '../../../tests/helpers/PriorityQueue.test'
+import doTestsPriorityQueue from '../../../tests/helpers/NPuzzle/PriorityQueue.test'
 
 /*
 The user must be able to choose between at LEAST 3 (relevant) heuristic functions.
@@ -66,7 +66,7 @@ il faut accepter des fichiers en theorie... > node ?
 	// heuristiques : conflits lineaires
 	*/
 
-//doTestsPriorityQueue();
+doTestsPriorityQueue();
 
 const displayMessage = (msg) => {
 	alert(msg);

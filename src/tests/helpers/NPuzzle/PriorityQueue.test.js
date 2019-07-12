@@ -1,4 +1,4 @@
-import PriorityQueue from '../../helpers/Npuzzle/PriorityQueue'
+import PriorityQueue from '../../../helpers/Npuzzle/PriorityQueue'
 
 const doTestsPriorityQueue = () => {
 	let pq = new PriorityQueue();
