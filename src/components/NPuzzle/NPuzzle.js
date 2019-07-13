@@ -9,6 +9,8 @@ import PuzzleInfos from './PuzzleInfos/PuzzleInfos';
 import PuzzleCommands from './PuzzleCommands/PuzzleCommands';
 import Solver from './Solver/Solver';
 
+import { MAX_SPEED } from '../../helpers/Npuzzle/defines';
+
 const NPuzzle = () => {
 	const [state, setState] = useState({
 		snail: null,
@@ -21,14 +23,13 @@ const NPuzzle = () => {
 	const [arrayState, setArrayState] = useState(null);
 
 	const [playState, setPlayState] = useState({
-		play: false,
 		arrays: null,
 		currentIndex: 0,
 	});
 
 	const [playParams, setPlayParams] = useState({
-		pause: false,
-		time: 60,
+		play: false,
+		speed: 800,
 	});
 
 	useEffect(() => {
@@ -43,30 +44,62 @@ const NPuzzle = () => {
 			startArray: array,
 		});
 		setArrayState(array);
+		document.addEventListener('keydown', keyPressHandler);
+		return (() => {
+			document.removeEventListener('keydown', keyPressHandler);
+		});
 	}, []);
 
 	useEffect(() => {
 		if (playState.arrays
-			&& !playParams.pause
+			&& playParams.play
 			&& playState.currentIndex + 1 < playState.arrays.length) {
 			setTimeout(() => {
-				const newIndex =  playState.currentIndex + 1;
+				const newIndex = playState.currentIndex + 1;
 				setPlayState({
 					...playState,
 					currentIndex: newIndex,
 				});
 				setArrayState(playState.arrays[newIndex]);
-			}, playParams.time);
+			}, MAX_SPEED - playParams.speed + 1);
 		}
-	}, [playState, playParams]);
+	}, [playState, playParams.play]);
 
 	const onResolveHandler = (arrays) => {
 		setPlayState({
-			play: true,
 			arrays: arrays,
 			currentIndex: 0,
 		});
-		console.log(arrays)
+		setPlayParams({...playParams, play: true});
+		console.log(arrays);
+	};
+
+	const onChangeSpeedHandler = (speed) => {
+		setPlayParams({
+			...playParams,
+			speed: speed,
+		});
+	};
+
+	const keyPressHandler = (event) => {
+		console.log(event.key);
+		switch (event.key) {
+			case 'p' :
+				togglePlayHandler();
+				break;
+			case ' ' :
+				break;
+			default:
+				break;
+		}
+	};
+
+	const togglePlayHandler = () => {
+		console.log(!playParams.play);
+		setPlayParams({
+			...playParams,
+			play: !playParams.play,
+		});
 	};
 
 	const trySwap = (value) => {
@@ -88,14 +121,23 @@ const NPuzzle = () => {
 
 	const setNewPuzzle = (size, array) => {
 		const snail = computeSnailIteration(size);
-		setState({
-			...state,
-			snail: snail,
-			size: size,
-			solvable: countInversions(array, snail) % 2 === 0,
-			startArray: array,
-		});
-		setArrayState(array);
+		setPlayParams({...playParams, play: false});
+		setTimeout(() => {
+			setState({
+				...state,
+				snail: snail,
+				size: size,
+				solvable: countInversions(array, snail) % 2 === 0,
+				startArray: array,
+			});
+			setArrayState(array);
+			setPlayState({
+				play: false,
+				arrays: null,
+				currentIndex: 0,
+			});
+		}, 100);
+
 	};
 
 	let board = <Spinner/>;
@@ -110,11 +152,11 @@ const NPuzzle = () => {
 	}
 
 	return (
-		<div className={classes.Npuzzle}>
-			<PuzzleCommands createNewPuzzle={setNewPuzzle} startArray={state.startArray} size={state.size} />
+		<div className={classes.Npuzzle} onKeyDown={keyPressHandler}>
+			<PuzzleCommands createNewPuzzle={setNewPuzzle} startArray={state.startArray} size={state.size} changeSpeed={onChangeSpeedHandler} speed={playParams.speed} playClicked={togglePlayHandler} />
 			{board}
 			<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail} solvable={state.solvable}
-					resolved={onResolveHandler} />
+					resolved={onResolveHandler}/>
 		</div>
 	)
 };

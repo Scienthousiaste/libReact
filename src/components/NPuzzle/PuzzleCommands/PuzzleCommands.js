@@ -14,9 +14,9 @@ const puzzleCommands = (props) => (
 		<Box >
 			<PuzzleParser createNewPuzzle={props.createNewPuzzle}/>
 			<PuzzleGenerator createNewPuzzle={props.createNewPuzzle}/>
-			<Button clicked={() => props.createNewPuzzle(props.size, props.startArray) }>Restart</Button>
+			<Button clicked={ () => props.createNewPuzzle(props.size, props.startArray) }>Restart</Button>
 		</Box>
-		<PlayParams/>
+		<PlayParams changeSpeed={props.changeSpeed} speed={props.speed} playClicked={props.playClicked} />
 	</div>
 );
 
