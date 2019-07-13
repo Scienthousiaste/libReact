@@ -29,13 +29,17 @@ const displayMessage = (m) => {
 	alert(m);
 };
 
-const goalStateString = (puzzleData) => {
-	let arr = Array(puzzleData.snail.length);
-	for (let i = 0; i < arr.length - 1; i++) {
-		arr[puzzleData.snail[i]] = i + 1;
+const computeGoalState = (snail) => {
+	let arr = Array(snail.length);
+	for (let i = 0; i < snail.length - 1; i++) {
+		arr[snail[i]] = i + 1;
 	}
-	arr[puzzleData.snail[puzzleData.snail.length - 1]] = 0;
-	return arr.toString();
+	arr[snail[snail.length - 1]] = 0;
+	return arr;
+}
+
+const goalStateString = (puzzleData) => {
+	return computeGoalState(puzzleData.snail).toString();
 };
 
 
@@ -120,6 +124,55 @@ export const computeLinearConflicts = (arr, size, snail) => {
 	}
 	return ((conflicts * 2) + computeManhattanDistance(arr, size, snail));
 };
+
+/*
+While any tile is out of its goal position do
+	If the blank is in its own goal position,
+		then swap with any misplaced tile
+else swap with the tile that belongs in the blank's position 
+*/
+
+export const computeRelaxedAdjacency = (arr, size, snail) => {
+	let ret = 0;
+	let idxZero = arr.indexOf(0); 
+	let fakeArr = [...arr];
+	let misplaced = [];
+	for (let i = 0; i < fakeArr.length; i++) {
+		if (fakeArr[i] === 0) continue;
+		if (snail[fakeArr[i] - 1] !== i) {
+			misplaced.push(i);
+		}
+	}
+	while (misplaced.length > 0) {
+		if (idxZero === snail[fakeArr[fakeArr.length - 1]]) {
+			let misplacedElem = misplaced.pop();
+			fakeArr[idxZero] = fakeArr[misplacedElem];
+			fakeArr[misplacedElem] = 0;
+			idxZero = misplacedElem;
+		}
+		else {
+			let goalArr = computeGoalState(snail);
+			//je veux goalState[idxZero]
+			//goalState[snail[i]] = i + 1; 
+			let elemToMove = snail.indexOf(fakeArr[idxZero]);		
+			misplaced.splice(elemToMove, 1);
+
+
+				/*
+	for (let i = 0; i < arr.length - 1; i++) {
+		arr[puzzleData.snail[i]] = i + 1;
+	}
+	arr[puzzleData.snail[puzzleData.snail.length - 1]] = 0;
+	*/
+
+			//			fakeArr[elemToMove] = 
+			idxZero = elemToMove; 
+			
+		}
+		ret++;
+	}
+	return ret;
+}
 
 export const solve = (puzzleData) => {
 	/*//TODO

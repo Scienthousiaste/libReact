@@ -4,7 +4,7 @@ import Button from '../../UI/Button/Button';
 import Box from '../../UI/Box/Box';
 import SolverCommand from './SolverCommands/SolverCommands';
 
-import {computeLinearConflicts, computeManhattanDistance, solve} from '../../../algorithms/Npuzzle/algorithm';
+import {computeLinearConflicts, computeManhattanDistance, computeRelaxedAdjacency, solve} from '../../../algorithms/Npuzzle/algorithm';
 
 import classes from './Solver.less';
 
@@ -18,6 +18,7 @@ const Solver = (props) => {
 	const heuristics = [
 		{value: 'manhattanDistance', func: computeManhattanDistance},
 		{value: 'linearConflict', func: computeLinearConflicts},
+		{value: 'relaxedAdjacency', func: computeRelaxedAdjacency},
 	];
 
 	useEffect(() => {
@@ -61,6 +62,8 @@ const Solver = (props) => {
 					Distance</Button>
 				<Button clicked={() => alert(computeLinearConflicts(props.arrayNumbers, props.size, props.snail))}>Linear
 					Conflicts</Button>
+				<Button clicked={() => alert(computeRelaxedAdjacency(props.arrayNumbers, props.size, props.snail))}>Relaxed
+					Adjacency</Button>
 			</Box>
 		</div>
 	)
