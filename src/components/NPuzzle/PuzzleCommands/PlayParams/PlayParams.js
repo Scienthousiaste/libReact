@@ -17,7 +17,7 @@ const PlayParams = (props) => {
 
 	return (
 		<Box>
-			<Slider step={1} min={1} max={ MAX_SPEED } defaultValue={props.speed} onChange={onChangeSpeed} />
+			<Slider step={1} min={1} max={ MAX_SPEED } value={props.speed} valueLabelDisplay={'auto'} onChange={onChangeSpeed} />
 			<Button clicked={props.playClicked}>Play</Button>
 		</Box>
 	);

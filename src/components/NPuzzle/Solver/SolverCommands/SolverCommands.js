@@ -5,6 +5,8 @@ import classes from './SolverCommands.less';
 import Radio from '../../../UI/Radio/Radio';
 import Input from '../../../UI/Input/Input';
 import Box from '../../../UI/Box/Box';
+import Slider from '@material-ui/core/Slider';
+import { MAX_WEIGHT } from '../../../../helpers/Npuzzle/defines';
 
 const SolverCommands = (props) => {
 
@@ -12,8 +14,7 @@ const SolverCommands = (props) => {
 	const options = [...props.heuristics];
 	options[props.selectedHeuristic]['selected'] = true;
 
-	const changeWeightHandler = (event) => {
-		const value = event.target.value;
+	const changeWeightHandler = (value) => {
 		if (isNaN(value)) return;
 		if (value) {
 			let weight = parseInt(value);
@@ -29,7 +30,7 @@ const SolverCommands = (props) => {
 	const onUpgradeHandler = () => {
 		const weight = props.weight;
 
-		if (weight < 10000) {
+		if (weight < MAX_WEIGHT) {
 			props.weightChanged(weight + 1);
 		}
 	};
@@ -46,10 +47,7 @@ const SolverCommands = (props) => {
 		<Box>
 			<div className={classes.SolverCommands}>
 				<Radio name={'heuristic'} options={options} clicked={(elem) => props.heuristicChanged(elem)}/>
-				<Input value={props.weight}
-					   changed={changeWeightHandler}
-					   pressUp={onUpgradeHandler}
-					   pressDown={onDowngradeHandler}/>
+				<Slider step={1} min={1} max={ MAX_WEIGHT } value={props.weight} valueLabelDisplay={'auto'} onChange={(_, value) => changeWeightHandler(value)} />
 			</div>
 		</Box>
 	);

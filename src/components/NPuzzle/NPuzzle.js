@@ -9,7 +9,7 @@ import PuzzleInfos from './PuzzleInfos/PuzzleInfos';
 import PuzzleCommands from './PuzzleCommands/PuzzleCommands';
 import Solver from './Solver/Solver';
 
-import { MAX_SPEED } from '../../helpers/Npuzzle/defines';
+import {MAX_SPEED} from '../../helpers/Npuzzle/defines';
 
 const NPuzzle = () => {
 	const [state, setState] = useState({
@@ -44,10 +44,7 @@ const NPuzzle = () => {
 			startArray: array,
 		});
 		setArrayState(array);
-		document.addEventListener('keydown', keyPressHandler);
-		return (() => {
-			document.removeEventListener('keydown', keyPressHandler);
-		});
+		console.log('LA');
 	}, []);
 
 	useEffect(() => {
@@ -84,10 +81,14 @@ const NPuzzle = () => {
 	const keyPressHandler = (event) => {
 		console.log(event.key);
 		switch (event.key) {
-			case 'p' :
+			case ' ' :
 				togglePlayHandler();
 				break;
-			case ' ' :
+			case 'ArrowLeft' :
+				changeStepHandler(playState.currentIndex - 1);
+				break;
+			case 'ArrowRight':
+				changeStepHandler(playState.currentIndex + 1);
 				break;
 			default:
 				break;
@@ -100,6 +101,15 @@ const NPuzzle = () => {
 			...playParams,
 			play: !playParams.play,
 		});
+	};
+
+	const changeStepHandler = (index) => {
+		if (!playState.arrays || index < 0 || index >= playState.arrays.length) return ;
+		setPlayState({
+			...playState,
+			currentIndex: index,
+		});
+		setArrayState(playState.arrays[index]);
 	};
 
 	const trySwap = (value) => {
@@ -140,23 +150,24 @@ const NPuzzle = () => {
 
 	};
 
-	let board = <Spinner/>;
+	let tileSet = <Spinner/>;
 
 	if (!state.loading) {
-		board = (
-			<div className={classes.Board}>
-				<TileSet arrayNumbers={arrayState} size={state.size} clicked={trySwap}/>
-				<PuzzleInfos arrayNumbers={arrayState} snail={state.snail}/>
-			</div>
+		tileSet = (
+			<TileSet arrayNumbers={arrayState} size={state.size} clicked={trySwap}/>
 		);
 	}
 
 	return (
-		<div className={classes.Npuzzle} onKeyDown={keyPressHandler}>
-			<PuzzleCommands createNewPuzzle={setNewPuzzle} startArray={state.startArray} size={state.size} changeSpeed={onChangeSpeedHandler} speed={playParams.speed} playClicked={togglePlayHandler} />
-			{board}
-			<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail} solvable={state.solvable}
-					resolved={onResolveHandler}/>
+		<div tabIndex={'1'} className={classes.Npuzzle} onKeyDown={keyPressHandler}>
+			<div className={classes.Board}>
+				<PuzzleCommands createNewPuzzle={setNewPuzzle} startArray={state.startArray} size={state.size}
+								changeSpeed={onChangeSpeedHandler} speed={playParams.speed}
+								playClicked={togglePlayHandler}/>
+				{tileSet}
+				<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail} solvable={state.solvable}
+						resolved={onResolveHandler}/>
+			</div>
 		</div>
 	)
 };
