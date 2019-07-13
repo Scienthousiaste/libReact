@@ -15,6 +15,7 @@ const NPuzzle = () => {
 		size: 0,
 		solvable: false,
 		loading: true,
+		startArray: null,
 	});
 
 	const [arrayState, setArrayState] = useState(null);
@@ -39,6 +40,7 @@ const NPuzzle = () => {
 			size: size,
 			solvable: countInversions(array, snail) % 2 === 0,
 			loading: false,
+			startArray: array,
 		});
 		setArrayState(array);
 	}, []);
@@ -91,6 +93,7 @@ const NPuzzle = () => {
 			snail: snail,
 			size: size,
 			solvable: countInversions(array, snail) % 2 === 0,
+			startArray: array,
 		});
 		setArrayState(array);
 	};
@@ -108,7 +111,7 @@ const NPuzzle = () => {
 
 	return (
 		<div className={classes.Npuzzle}>
-			<PuzzleCommands createNewPuzzle={setNewPuzzle} />
+			<PuzzleCommands createNewPuzzle={setNewPuzzle} startArray={state.startArray} size={state.size} />
 			{board}
 			<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail} solvable={state.solvable}
 					resolved={onResolveHandler} />
