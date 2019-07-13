@@ -1,0 +1,17 @@
+MATTHIEU
+1 - POKEMON IMAGES
+2 - TRY TO IMAGE CROP
+3 - REMAKE BOXES TO INCREASE THE USER EXPERIENCE
+4 - PRINT INFOS ABOUT THE GAME
+
+
+
+Tim
+1 - pas réinsérer les états déjà dans l'openset
+2 - update Manhattan distance plutôt que calcul de 0
+3 - update linear conflicts plutôt que calcul de 0
+4 - infos de l'algo a transmettre (nombre d'états ouverts)
+
+
+TOGEsemble
+5 - ALGOS INFOS en live (SOLVE en component)
