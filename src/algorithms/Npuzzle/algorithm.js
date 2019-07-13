@@ -98,27 +98,21 @@ export const computeLinearConflicts = (arr, size, snail) => {
 		const x = i % size;
 		const y = Math.floor(i / size);
 		if (x === goalX) {
-		    //for (let xx = x + 1; xx < size; xx++) {
-			for (let xx = 0; xx < size; xx++) {
-				if (xx === x) continue;
-				const goalXX = snail[arr[y * size + xx]] % size;
-				const goalYY = Math.floor(snail[arr[y * size + xx]] / size);
-			    //if (goalXX === goalX && goalYY < goalY && arr[y * size + xx] !== 0) {
-			    if (goalXX === goalX && ((xx > x && goalYY < goalY) || (xx < x && goalYY > goalY)) && arr[y * size + xx] !== 0) {
-					console.log(x + ", " + y + " is in linear conflict with point with xx = " + xx);
+			for (let yy = y + 1; yy < size; yy++) {
+				if (snail[arr[yy * size + x]] === 0) continue;
+				const goalXX = snail[arr[yy * size + x] - 1] % size;
+				const goalYY = Math.floor(snail[arr[yy * size + x] - 1] / size);
+				if (yy > y && goalX === goalXX && goalYY < goalY) {
 					conflicts++;
 				}
 			}
 		}
-		if (y === goalY) {
-		    //for (let yy = y + 1; yy < size; yy++) {
-			for (let yy = 0; yy < size; yy++) {
-				if (yy === y) continue;
-				const goalXX = snail[arr[yy * size + x]] % size;
-				const goalYY = Math.floor(snail[arr[yy * size + x]] / size);
-			    //if (goalYY === goalY && goalXX < goalX && arr[yy * size + x] !== 0) {
-			    if (goalYY === goalY && ((yy > y && goalXX < goalX) || (yy < y && goalXX > goalX)) && arr[yy * size + x] !== 0) {
-					console.log(x + ", " + y + " is in linear conflict with point with yy = " + yy);
+		if (y === goalY) { 
+			for (let xx = x + 1; xx < size; xx++) {
+				if (snail[arr[y * size + xx]] === 0) continue;
+				const goalXX = snail[arr[y * size + xx] - 1] % size;
+				const goalYY = Math.floor(snail[arr[y * size + xx] - 1] / size);
+				if (xx > x && goalY === goalYY && goalXX < goalX) {
 					conflicts++;
 				}
 			}

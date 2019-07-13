@@ -27,7 +27,7 @@ const PuzzleParser = (props) => {
 			let arrNumbers = [];
 			let numbersBingo = [];
 
-			if (arr.length == 1) {
+			if (arr.length === 1) {
 				let numbers = arr[0].split(' ');
 				candidateSize = Math.sqrt(numbers.length);
 				if (candidateSize - Math.floor(candidateSize) !== 0) {
