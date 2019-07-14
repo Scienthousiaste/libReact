@@ -3,6 +3,12 @@ import doTestsPriorityQueue from '../../tests/helpers/NPuzzle/PriorityQueue.test
 import doTestsLinearConflicts from '../../tests/algorithms/Npuzzle/algorithm.test';
 
 /*
+ * Test the program on some puzzles, some from the students (the subject requires that they bring some) and some using the generator in the subject.
+
+The students have implemented an option to do a greedy search and are able to explain it.
+The students have implemented an option to do a uniform-cost search and are able to explain it.
+
+
 The user must be able to choose between at LEAST 3 (relevant) heuristic functions.
 
 • At the end of the search, the program has to provide the following values:
@@ -137,6 +143,7 @@ export const computeRelaxedAdjacency = (arr, size, snail) => {
 	let idxZero = arr.indexOf(0); 
 	let fakeArr = [...arr];
 	let misplaced = [];
+	let goalArr = computeGoalState(snail);
 	for (let i = 0; i < fakeArr.length; i++) {
 		if (fakeArr[i] === 0) continue;
 		if (snail[fakeArr[i] - 1] !== i) {
@@ -151,23 +158,14 @@ export const computeRelaxedAdjacency = (arr, size, snail) => {
 			idxZero = misplacedElem;
 		}
 		else {
-			let goalArr = computeGoalState(snail);
+			//TODO : finir ici...
 			//je veux goalState[idxZero]
-			//goalState[snail[i]] = i + 1; 
+			//jgoalState[snail[i]] = i + 1; 
+
+			//			goalArr[
 			let elemToMove = snail.indexOf(fakeArr[idxZero]);		
 			misplaced.splice(elemToMove, 1);
-
-
-				/*
-	for (let i = 0; i < arr.length - 1; i++) {
-		arr[puzzleData.snail[i]] = i + 1;
-	}
-	arr[puzzleData.snail[puzzleData.snail.length - 1]] = 0;
-	*/
-
-			//			fakeArr[elemToMove] = 
 			idxZero = elemToMove; 
-			
 		}
 		ret++;
 	}
@@ -179,10 +177,13 @@ export const solve = (puzzleData) => {
 	let max_size = 0;
 	let n_iter = 0;
 	*/
+	let startTimestamp = Date.now();
+
 	let [arr, size, snail, heuristic, weight] = [puzzleData.arr, puzzleData.size, puzzleData.snail, puzzleData.heuristic, puzzleData.weight];
 
 	let openSet = new PriorityQueue();
-	let alreadyAccessedStates = {};
+	let openSetContent = {}; //experiment now
+	let closedSet = {};
 	let initialState = {
 		arr: arr,
 		cost: heuristic(arr, size, snail),
@@ -191,7 +192,7 @@ export const solve = (puzzleData) => {
 		previousState: null
 	};
 
-	alreadyAccessedStates[initialState.arr.toString()] = initialState.cost;
+	closedSet[initialState.arr.toString()] = initialState.cost;
 	const goalState = goalStateString(puzzleData);
 	if (initialState.arr.toString() === goalState) {
 		displayMessage("This is already the solution state");
@@ -204,26 +205,38 @@ export const solve = (puzzleData) => {
 			return foundSolution(accessibleStatesFromInitial[i]);
 		}
 		openSet.enqueue(accessibleStatesFromInitial[i], accessibleStatesFromInitial[i].cost);
+		openSetContent[accessibleStatesFromInitial[i].arr.toString()] = accessibleStatesFromInitial[i].cost; //exp
 	}
 
 	while (!openSet.isEmpty()) {
 		let state = openSet.dequeue();
 		let nextStates = accessibleStates(state.content, size, weight, heuristic, snail);
-
+	
+		//console.log(openSet); //exp2
 		for (let i = 0; i < nextStates.length; i++) {
 			let accessibleState = nextStates[i];
 			if (accessibleState.arr.toString() === goalState) {
+				logTime(startTimestamp);
 				return foundSolution(accessibleState);
 			}
-			if (!alreadyAccessedStates[accessibleState.arr.toString()]) {
-				//TODO:  si v existe dans closedList (devrait etre bon) ou si v existe dans openList avec un cout inférieur (pas bon..)
-				alreadyAccessedStates[accessibleState.arr.toString()] = accessibleState.cost;
+			let stringArr = accessibleState.arr.toString();
+			if (!isInClosedSetOrLowerCostInOpenSet(stringArr, accessibleState.cost, closedSet, openSetContent)) {
+				closedSet[accessibleState.arr.toString()] = accessibleState.cost;
 				openSet.enqueue(accessibleState, accessibleState.cost);
+				openSetContent[accessibleState.arr.toString()] = accessibleState.cost; //exp
 			}
 		}
 	}
 	displayMessage("There is no solution to this puzzle");
 };
+
+const logTime = (startPoint) => {
+	console.log("Time to find the solution: " + (Date.now() - startPoint)/1000 + "s");
+}
+
+const isInClosedSetOrLowerCostInOpenSet = (stringArr, cost, closedSet, openSetContent) => {
+	return (closedSet[stringArr] || (openSetContent[stringArr] < cost));
+}
 
 const retrievePath = (finalState) => {
 	console.log(finalState);
