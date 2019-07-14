@@ -42,15 +42,37 @@ const computeGoalState = (snail) => {
 	}
 	arr[snail[snail.length - 1]] = 0;
 	return arr;
-}
+};
 
 const goalStateString = (puzzleData) => {
 	return computeGoalState(puzzleData.snail).toString();
 };
 
+const logTime = (startPoint) => {
+	console.log("Time to find the solution: " + (Date.now() - startPoint)/1000 + "s");
+};
+
+const isInClosedSetOrLowerCostInOpenSet = (stringArr, cost, closedSet, openSetContent) => {
+	return (closedSet[stringArr] || (openSetContent[stringArr] < cost));
+};
+
+const retrievePath = (finalState) => {
+	console.log(finalState);
+	let path = [];
+	let curState = finalState;
+	while (curState != null) {
+		path.unshift(curState.arr);
+		curState = curState.previousState;
+	}
+	return path;
+};
+
+const foundSolution = (solutionState) => {
+	displayMessage("Found solution on step " + solutionState.step);
+	return retrievePath(solutionState);
+};
 
 const accessibleStates = (curState, size, weight, heuristic, snail) => {
-	//TODO(opti): computeCost => updateCost
 	let ret = [];
 	let dir = [1, -1, size, -size];
 
@@ -66,10 +88,44 @@ const accessibleStates = (curState, size, weight, heuristic, snail) => {
 		if (!(newIdx < 0 || newIdx >= curState.arr.length
 			|| (x_cur_zero !== x_new_zero && y_cur_zero !== y_new_zero))) {
 
-			let newStep = curState.step + 1;
 			let newArr = [...curState.arr];
 			newArr[curState.idxZero] = newArr[curState.idxZero + d];
 			newArr[curState.idxZero + d] = 0;
+			
+			/* updateLinearConflicts
+			//TODO(opti): computeCost => updateCost
+			let newCost = curState.cost + 1 + weight * updateLinearConflicts(
+				curState.arr,
+				newArr,
+				size,
+				snail,
+				{x: x_new_zero, y: y_new_zero},
+				{x: x_cur_zero, y: y_cur_zero},
+				{x: snail[newArr[curState.idxZero] - 1] % size, y: Math.floor(snail[newArr[curState.idxZero] - 1])});
+			
+			const newState = {
+				arr:newArr,
+				idxZero: curState.idxZero + d,
+				cost: newCost,
+				step: curState.step + 1,
+				previousState: curState,
+			};
+
+				//updateManhattan qui fonctionne
+			let newCost = curState.cost + 1 + weight * updateManhattan(
+				{x: x_new_zero, y: y_new_zero},
+				{x: x_cur_zero, y: y_cur_zero},
+				{x: snail[newArr[curState.idxZero] - 1] % size, y: Math.floor(snail[newArr[curState.idxZero] - 1])});
+			const newState = {
+				arr:newArr,
+				idxZero: curState.idxZero + d,
+				cost: newCost,
+				step: curState.step + 1,
+				previousState: curState,
+			};
+			*/
+
+			let newStep = curState.step + 1;
 			const newState = {
 				arr:newArr,
 				idxZero: curState.idxZero + d,
@@ -83,8 +139,11 @@ const accessibleStates = (curState, size, weight, heuristic, snail) => {
 	return ret;
 };
 
-//TODO : comparer performances avec differentes versions de computeManhattanDistance
-//TODO : get old manhattan distance and check if it goes up or down
+
+export const updateManhattanDistance = (current, previous, goal) => {
+	return (Math.abs(previous.y - goal.y) + Math.abs(previous.x - goal.x))
+			- (Math.abs(current.y - goal.y) + Math.abs(current.x - goal.x));
+}
 
 export const computeManhattanDistance = (arr, size, snail) => {
 	let dist = 0;
@@ -97,6 +156,61 @@ export const computeManhattanDistance = (arr, size, snail) => {
 		dist += Math.abs(y_current - y_goal) + Math.abs(x_current - x_goal);
 	}
 	return dist;
+}
+
+export const updateLinearConflicts = (oldArr, newArr, size, snail, current, previous, goal) => {
+	// oldArr / newArr ne devrait changer strictement rien je crois
+	let oldConflicts = 0;
+	let newConflicts = 0;
+	
+	//la ligne sur laquelle la case bouge ne peut pas changer de statut de conflits, seulement la dimension dans laquelle on entre/sort
+	// si x reste identique, on bouge dans la colonne, aucun conflit de cette colonne ne peut etre modifiée, par contre ceux de l'ancienne ligne
+	// ne sont plus pertinents et ceux de la nouvelle ligne sont a prendre en compte
+
+	if (current.x === previous.x) {
+		for (let yy = 0; yy < size; yy++) {
+			if (yy === previous.y) continue;
+			const goalXX = snail[oldArr[yy * size + previous.x] - 1] % size;
+			const goalYY = Math.floor(snail[oldArr[yy * size + previous.x] - 1] / size);
+			if (goal.x === goalXX && ((yy > previous.y && goalYY < goal.y) || (yy < previous.y && goalYY > goal.y))) {
+				oldConflicts++;
+			}
+		}
+		for (let yy = 0; yy < size; yy++) {
+			if (yy === current.y) continue;
+			const goalXX = snail[newArr[yy * size + current.x] - 1] % size;
+			const goalYY = Math.floor(snail[newArr[yy * size + current.x] - 1] / size);
+			if (goal.x === goalXX && ((yy > current.y && goalYY < goal.y) || (yy < current.y && goalYY > goal.y))) {
+				newConflicts++;
+			}
+		}
+	}
+	else {
+		for (let xx = 0; xx < size; xx++) {
+			if (xx === previous.x) continue;
+			const goalXX = snail[oldArr[previous.y * size + xx] - 1] % size;
+			const goalYY = Math.floor(snail[oldArr[previous.y * size + xx] - 1] / size);
+			if (goal.y === goalYY && ((xx > previous.x && goalXX < goal.x) || (xx < previous.x && goalXX > goal.x))) {
+				oldConflicts++;
+			}
+		}
+		for (let xx = 0; xx < size; xx++) {
+			if (xx === current.x) continue;
+			const goalXX = snail[newArr[current.y * size + xx] - 1] % size;
+			const goalYY = Math.floor(snail[newArr[current.y * size + xx] - 1] / size);
+			if (goal.y === goalYY && ((xx > current.x && goalXX < goal.x) || (xx < current.x && goalXX > goal.x))) {
+				newConflicts++;
+			}
+		}
+	}
+	
+	if (newConflicts !== oldConflicts) {
+		console.log("new conflicts ", newConflicts, " old ", oldConflicts);
+	}
+	let ret1 = (newConflicts - oldConflicts) * 2;
+	let ret2 = updateManhattanDistance(current, previous, goal);
+	console.log("ret update linear, conflicts = ", ret1, "updateManhattan = ",  ret2);
+	return ret1 + ret2;
 }
 
 export const computeLinearConflicts = (arr, size, snail) => {
@@ -112,7 +226,7 @@ export const computeLinearConflicts = (arr, size, snail) => {
 				if (snail[arr[yy * size + x]] === 0) continue;
 				const goalXX = snail[arr[yy * size + x] - 1] % size;
 				const goalYY = Math.floor(snail[arr[yy * size + x] - 1] / size);
-				if (yy > y && goalX === goalXX && goalYY < goalY) {
+				if (goalX === goalXX && goalYY < goalY) {
 					conflicts++;
 				}
 			}
@@ -122,7 +236,7 @@ export const computeLinearConflicts = (arr, size, snail) => {
 				if (snail[arr[y * size + xx]] === 0) continue;
 				const goalXX = snail[arr[y * size + xx] - 1] % size;
 				const goalYY = Math.floor(snail[arr[y * size + xx] - 1] / size);
-				if (xx > x && goalY === goalYY && goalXX < goalX) {
+				if (goalY === goalYY && goalXX < goalX) {
 					conflicts++;
 				}
 			}
@@ -130,13 +244,6 @@ export const computeLinearConflicts = (arr, size, snail) => {
 	}
 	return ((conflicts * 2) + computeManhattanDistance(arr, size, snail));
 };
-
-/*
-While any tile is out of its goal position do
-	If the blank is in its own goal position,
-		then swap with any misplaced tile
-else swap with the tile that belongs in the blank's position 
-*/
 
 export const computeRelaxedAdjacency = (arr, size, snail) => {
 	let ret = 0;
@@ -147,42 +254,45 @@ export const computeRelaxedAdjacency = (arr, size, snail) => {
 	for (let i = 0; i < fakeArr.length; i++) {
 		if (fakeArr[i] === 0) continue;
 		if (snail[fakeArr[i] - 1] !== i) {
-			misplaced.push(i);
+			misplaced.push(fakeArr[i]);
 		}
 	}
+	console.log("misplaced", misplaced);
+	console.log("fakeArr", fakeArr);
 	while (misplaced.length > 0) {
-		if (idxZero === snail[fakeArr[fakeArr.length - 1]]) {
-			let misplacedElem = misplaced.pop();
-			fakeArr[idxZero] = fakeArr[misplacedElem];
-			fakeArr[misplacedElem] = 0;
-			idxZero = misplacedElem;
+		if (idxZero === snail[snail.length - 1]) {
+			console.log("zero a sa place");
+			let misplacedElem = misplaced[misplaced.length - 1];
+			let idxMisplacedElem = fakeArr.indexOf(misplacedElem);
+			fakeArr[idxZero] = fakeArr[idxMisplacedElem];
+			fakeArr[idxMisplacedElem] = 0;
+			idxZero = idxMisplacedElem;
 		}
 		else {
-			//TODO : finir ici...
-			//je veux goalState[idxZero]
-			//jgoalState[snail[i]] = i + 1; 
-
-			//			goalArr[
-			let elemToMove = snail.indexOf(fakeArr[idxZero]);		
-			misplaced.splice(elemToMove, 1);
-			idxZero = elemToMove; 
+			let elemToMove = goalArr[idxZero];
+			console.log("elem to move", elemToMove);
+			let idxElemToMove = fakeArr.indexOf(elemToMove);
+			console.log("idxElemToMove ", idxElemToMove);
+			misplaced.splice(idxElemToMove, 1);
+			idxZero = idxElemToMove; 
+			fakeArr[idxZero] = elemToMove;
+			fakeArr[idxElemToMove] = 0;
 		}
+		console.log("ret", ret, " misplaced length", misplaced.length, "fakeArr", fakeArr);
 		ret++;
 	}
 	return ret;
 }
 
 export const solve = (puzzleData) => {
-	/*//TODO
+	/*//TODO infos a transmettre
 	let max_size = 0;
 	let n_iter = 0;
 	*/
 	let startTimestamp = Date.now();
-
 	let [arr, size, snail, heuristic, weight] = [puzzleData.arr, puzzleData.size, puzzleData.snail, puzzleData.heuristic, puzzleData.weight];
-
 	let openSet = new PriorityQueue();
-	let openSetContent = {}; //experiment now
+	let openSetContent = {};
 	let closedSet = {};
 	let initialState = {
 		arr: arr,
@@ -205,14 +315,13 @@ export const solve = (puzzleData) => {
 			return foundSolution(accessibleStatesFromInitial[i]);
 		}
 		openSet.enqueue(accessibleStatesFromInitial[i], accessibleStatesFromInitial[i].cost);
-		openSetContent[accessibleStatesFromInitial[i].arr.toString()] = accessibleStatesFromInitial[i].cost; //exp
+		openSetContent[accessibleStatesFromInitial[i].arr.toString()] = accessibleStatesFromInitial[i].cost;
 	}
 
 	while (!openSet.isEmpty()) {
 		let state = openSet.dequeue();
 		let nextStates = accessibleStates(state.content, size, weight, heuristic, snail);
 	
-		//console.log(openSet); //exp2
 		for (let i = 0; i < nextStates.length; i++) {
 			let accessibleState = nextStates[i];
 			if (accessibleState.arr.toString() === goalState) {
@@ -223,35 +332,11 @@ export const solve = (puzzleData) => {
 			if (!isInClosedSetOrLowerCostInOpenSet(stringArr, accessibleState.cost, closedSet, openSetContent)) {
 				closedSet[accessibleState.arr.toString()] = accessibleState.cost;
 				openSet.enqueue(accessibleState, accessibleState.cost);
-				openSetContent[accessibleState.arr.toString()] = accessibleState.cost; //exp
+				openSetContent[accessibleState.arr.toString()] = accessibleState.cost;
 			}
 		}
 	}
 	displayMessage("There is no solution to this puzzle");
-};
-
-const logTime = (startPoint) => {
-	console.log("Time to find the solution: " + (Date.now() - startPoint)/1000 + "s");
-}
-
-const isInClosedSetOrLowerCostInOpenSet = (stringArr, cost, closedSet, openSetContent) => {
-	return (closedSet[stringArr] || (openSetContent[stringArr] < cost));
-}
-
-const retrievePath = (finalState) => {
-	console.log(finalState);
-	let path = [];
-	let curState = finalState;
-	while (curState != null) {
-		path.unshift(curState.arr);
-		curState = curState.previousState;
-	}
-	return path;
-};
-
-const foundSolution = (solutionState) => {
-	displayMessage("Found solution on step " + solutionState.step);
-	return retrievePath(solutionState);
 };
 
 doTestsPriorityQueue();

@@ -12,10 +12,11 @@ Tim
 3 - update linear conflicts plutôt que calcul de 0
 4 - infos de l'algo a transmettre (nombre d'états ouverts)
 5 - Greedy search (algo un peu nul mais qui peut tous les résoudre normalement)
+6 - S'assurer que la page ne crash jamais
 
 TOGEsemble
 5 - ALGOS INFOS en live (SOLVE en component)
 
-
-BUGS
+BUGS - interface
 - quand on lance un autre solve pendant que ça solve 
+- spinner/truc qui s'affiche pendant que l'algo résoud
