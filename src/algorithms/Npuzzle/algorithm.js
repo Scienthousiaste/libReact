@@ -267,19 +267,22 @@ export const computeRelaxedAdjacency = (arr, size, snail) => {
 			fakeArr[idxZero] = fakeArr[idxMisplacedElem];
 			fakeArr[idxMisplacedElem] = 0;
 			idxZero = idxMisplacedElem;
+			console.log("fake arr after move zero from its place", fakeArr);
 		}
 		else {
 			let elemToMove = goalArr[idxZero];
 			console.log("elem to move", elemToMove);
 			let idxElemToMove = fakeArr.indexOf(elemToMove);
 			console.log("idxElemToMove ", idxElemToMove);
-			misplaced.splice(idxElemToMove, 1);
-			idxZero = idxElemToMove; 
 			fakeArr[idxZero] = elemToMove;
 			fakeArr[idxElemToMove] = 0;
+			idxZero = idxElemToMove; 
+			
+			misplaced.splice(idxElemToMove, 1);
 		}
 		console.log("ret", ret, " misplaced length", misplaced.length, "fakeArr", fakeArr);
 		ret++;
+		if (ret > 10) return;
 	}
 	return ret;
 }
