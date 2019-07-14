@@ -257,32 +257,23 @@ export const computeRelaxedAdjacency = (arr, size, snail) => {
 			misplaced.push(fakeArr[i]);
 		}
 	}
-	console.log("misplaced", misplaced);
-	console.log("fakeArr", fakeArr);
 	while (misplaced.length > 0) {
 		if (idxZero === snail[snail.length - 1]) {
-			console.log("zero a sa place");
-			let misplacedElem = misplaced[misplaced.length - 1];
-			let idxMisplacedElem = fakeArr.indexOf(misplacedElem);
+			const misplacedElem = misplaced[misplaced.length - 1];
+			const idxMisplacedElem = fakeArr.indexOf(misplacedElem);
 			fakeArr[idxZero] = fakeArr[idxMisplacedElem];
 			fakeArr[idxMisplacedElem] = 0;
 			idxZero = idxMisplacedElem;
-			console.log("fake arr after move zero from its place", fakeArr);
 		}
 		else {
-			let elemToMove = goalArr[idxZero];
-			console.log("elem to move", elemToMove);
-			let idxElemToMove = fakeArr.indexOf(elemToMove);
-			console.log("idxElemToMove ", idxElemToMove);
+			const elemToMove = goalArr[idxZero];
+			const idxElemToMove = fakeArr.indexOf(elemToMove);
 			fakeArr[idxZero] = elemToMove;
 			fakeArr[idxElemToMove] = 0;
 			idxZero = idxElemToMove; 
-			
-			misplaced.splice(idxElemToMove, 1);
+			misplaced.splice(misplaced.indexOf(elemToMove), 1);
 		}
-		console.log("ret", ret, " misplaced length", misplaced.length, "fakeArr", fakeArr);
 		ret++;
-		if (ret > 10) return;
 	}
 	return ret;
 }
