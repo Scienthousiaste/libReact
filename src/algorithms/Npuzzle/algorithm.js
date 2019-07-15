@@ -47,7 +47,7 @@ const goalStateString = (puzzleData) => {
 };
 
 const logTime = (runInfo) => {
-	runInfo.time = (Date.now() - runInfo.time) / 1000;
+	runInfo.time = (Number(Date.now()) - Number(runInfo.time)) / 1000;
 	console.log("Time to find the solution: " + runInfo.time + "s");
 };
 
@@ -67,18 +67,10 @@ const retrievePath = (finalState) => {
 };
 
 const foundSolution = (solutionState, runInfo) => {
-	if (runInfo.purgeStep > 0) {
-		displayMessage("Found solution on step " + Number(Number(runInfo.purgeStep) + Number(solutionState.step)));
-		
-		//let nextSolutionPath = runInfo.solutionPath.concat(retrievePath(nextState));
-		console.log(runInfo);
-		return runInfo.solutionPath.concat(retrievePath(solutionState));
-	}
-	else {
-		displayMessage("Found solution on step " + solutionState.step);
-		console.log(runInfo);
-		return retrievePath(solutionState);
-	}
+	logTime(runInfo);
+	displayMessage("Found solution on step " + Number(Number(runInfo.purgeStep) + Number(solutionState.step)));
+	console.log(runInfo);
+	return runInfo.solutionPath.concat(retrievePath(solutionState));
 };
 
 const accessibleStates = (curState, size, weight, heuristic, snail) => {
@@ -293,11 +285,12 @@ export const solve = (puzzleData) => {
 	let n_iter = 0;
 	*/
 	let runInfo = {
-		time: Date.now(),
-		timeComplexity: 0,
+		timeComplexity: (puzzleData.timeComplexity ? puzzleData.timeComplexity : 0),
 		sizeComplexity: 0,
+		sizeComplexityTotal: (puzzleData.sizeComplexityTotal ? puzzleData.sizeComplexityTotal : 0),
 		purgeStep: (puzzleData.purgeStep ? puzzleData.purgeStep : 0),
 		solutionPath: (puzzleData.solutionPath ? puzzleData.solutionPath : []),
+		time: (puzzleData.time ? puzzleData.time : Date.now()),
 	};
 
 	let [arr, size, snail, heuristic, weight] = [puzzleData.arr, puzzleData.size, puzzleData.snail, puzzleData.heuristic, puzzleData.weight];
@@ -336,7 +329,6 @@ export const solve = (puzzleData) => {
 		for (let i = 0; i < nextStates.length; i++) {
 			let accessibleState = nextStates[i];
 			if (accessibleState.arr.toString() === goalState) {
-				logTime(runInfo);
 				return foundSolution(accessibleState, runInfo);
 			}
 			let stringArr = accessibleState.arr.toString();
@@ -348,10 +340,13 @@ export const solve = (puzzleData) => {
 			runInfo.sizeComplexity = Math.max(openSet.getSize(), runInfo.sizeComplexity);
 			if (runInfo.sizeComplexity > THRESHOLD_SIZE_COMPLEXITY) {
 				let nextState = findMaxStepNode(openSet);	
-				//				console.log(retrievePath(nextState));
 				let nextPurgeStep = runInfo.purgeStep + nextState.step;
 				let nextSolutionPath = runInfo.solutionPath.concat(retrievePath(nextState));
+				let nextTime = runInfo.time;
+				let nextSizeComplexityTotal = runInfo.sizeComplexity + runInfo.sizeComplexityTotal;
+				let nextTimeComplexity = runInfo.timeComplexity;
 				console.log("Purge - we restart from ", nextState.arr, ", with cost ", nextState.cost);
+				// TODO : remettre imperativement a jour timeComplexity: 341, sizeComplexity: 438
 				openSet = {};
 				closedSet = {};
 				runInfo = {};
@@ -364,7 +359,10 @@ export const solve = (puzzleData) => {
 					heuristic: heuristic,
 					weight: weight,
 					purgeStep: nextPurgeStep,
-					solutionPath: nextSolutionPath
+					solutionPath: nextSolutionPath,
+					time: nextTime,
+					sizeComplexityTotal: nextSizeComplexityTotal,
+					timeComplexity: nextTimeComplexity,
 				});
 			}
 		}
