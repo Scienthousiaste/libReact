@@ -13,6 +13,7 @@ const Solver = (props) => {
 	const [state, setState] = useState({
 		weight: 0,
 		selectedHeuristic: 0,
+		selectedAlgorithm: 0,
 	});
 
 	const heuristics = [
@@ -20,16 +21,26 @@ const Solver = (props) => {
 		{value: 'linearConflict', func: computeLinearConflicts},
 		{value: 'relaxedAdjacency', func: computeRelaxedAdjacency},
 	];
+	const algorithms = [
+		{value: 'weighted A*'},
+		{value: 'greedy'},
+		{value: 'uniform cost search'},
+	];
 
 	useEffect(() => {
 		setState({
 			weight: 20,
 			selectedHeuristic: 0,
+			selectedAlgorithm: 0,
 		});
 	}, []);
 
 	const changeHeuristicHandler = (elem) => {
 		setState({...state, selectedHeuristic: heuristics.indexOf(elem)});
+	};
+
+	const changeAlgorithmHandler = (elem) => {
+		setState({...state, selectedAlgorithm: algorithms.indexOf(elem)});
 	};
 
 	const changeWeightHandler = (weight) => {
@@ -42,7 +53,8 @@ const Solver = (props) => {
 			size: props.size,
 			snail: props.snail,
 			weight: state.weight,
-			heuristic: heuristics[state.selectedHeuristic].func
+			heuristic: heuristics[state.selectedHeuristic].func,
+			algorithm: algorithms[state.selectedAlgorithm]
 		});
 		if (array) {
 			props.resolved(array);
@@ -51,8 +63,16 @@ const Solver = (props) => {
 
 	return (
 		<div className={classes.Solver}>
-			<SolverCommand heuristics={heuristics} selectedHeuristic={state.selectedHeuristic} weight={state.weight}
-						   heuristicChanged={changeHeuristicHandler} weightChanged={changeWeightHandler}/>
+			<SolverCommand
+				heuristics={heuristics}
+				selectedHeuristic={state.selectedHeuristic} 
+				algorithms={algorithms}
+				selectedAlgorithm={state.selectedAlgorithm}
+				weight={state.weight}
+				heuristicChanged={changeHeuristicHandler}
+				algorithmChanged={changeAlgorithmHandler}
+				weightChanged={changeWeightHandler}
+			/>
 			<Box>
 				{
 					props.solvable ? <Button clicked={resolveHandler}>Solve</Button>

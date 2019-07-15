@@ -8,11 +8,12 @@ MATTHIEU
 
 Tim
 (DONE) 1 - pas réinsérer les états déjà dans l'openset
-2 - update Manhattan distance plutôt que calcul de 0
+(DONE) 2 - update Manhattan distance plutôt que calcul de 0
 3 - update linear conflicts plutôt que calcul de 0
 4 - infos de l'algo a transmettre (nombre d'états ouverts)
-5 - Greedy search (algo un peu nul mais qui peut tous les résoudre normalement)
+5 - Greedy search
 6 - S'assurer que la page ne crash jamais
+7 - uniform cost
 
 TOGEsemble
 5 - ALGOS INFOS en live (SOLVE en component)

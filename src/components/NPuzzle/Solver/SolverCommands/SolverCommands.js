@@ -10,9 +10,10 @@ import { MAX_WEIGHT } from '../../../../helpers/Npuzzle/defines';
 
 const SolverCommands = (props) => {
 
-
-	const options = [...props.heuristics];
-	options[props.selectedHeuristic]['selected'] = true;
+	const heuristicOptions = [...props.heuristics];
+	const algorithmOptions = [...props.algorithms];
+	heuristicOptions[props.selectedHeuristic]['selected'] = true;
+	algorithmOptions[props.selectedAlgorithm]['selected'] = true;
 
 	const changeWeightHandler = (value) => {
 		if (isNaN(value)) return;
@@ -46,7 +47,10 @@ const SolverCommands = (props) => {
 	return (
 		<Box>
 			<div className={classes.SolverCommands}>
-				<Radio name={'heuristic'} options={options} clicked={(elem) => props.heuristicChanged(elem)}/>
+				<Radio name={'algorithm'} options={algorithmOptions} clicked={(elem) => props.algorithmChanged(elem)}/>
+			</div>
+			<div className={classes.SolverCommands}>
+				<Radio name={'heuristic'} options={heuristicOptions} clicked={(elem) => props.heuristicChanged(elem)}/>
 				<Slider step={1} min={1} max={ MAX_WEIGHT } value={props.weight} valueLabelDisplay={'auto'} onChange={(_, value) => changeWeightHandler(value)} />
 			</div>
 		</Box>

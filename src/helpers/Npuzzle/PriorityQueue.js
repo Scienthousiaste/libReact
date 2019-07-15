@@ -52,6 +52,10 @@ class MinPriorityQueue {
 	isEmpty() {
 		return this.heap.length <= 1;
 	}
+
+	getSize() {
+		return this.heap.length - 1;
+	}
 }
 
 export default MinPriorityQueue;

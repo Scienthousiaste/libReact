@@ -6,7 +6,7 @@ import {BrowserRouter, Switch, Route} from 'react-router-dom';
 
 import Layout from './components/hoc/Layout/Layout';
 
-import NPuzzle from './components/NPuzzle/NPuzzle';
+import NPuzzle from './components/Npuzzle/Npuzzle';
 
 const App = () => {
 
