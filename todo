@@ -12,9 +12,10 @@ Tim
 3 - update linear conflicts plutôt que calcul de 0
 (DONE - reverif) 4 - infos de l'algo a transmettre (nombre d'états ouverts)
 5 - Greedy search
-6 - S'assurer que la page ne crash jamais
+6 - S'assurer que la page ne crash jamais / permettre de quitter la resolution
 7 - uniform cost
 8 - Passer les données d'un solve a l'autre de maniere plus clean
+9 - mettre le threshold purge en variable modifiable
 
 TOGEsemble
 5 - ALGOS INFOS en live (SOLVE en component)

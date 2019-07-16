@@ -285,6 +285,7 @@ export const solve = (puzzleData) => {
 	let n_iter = 0;
 	*/
 	let runInfo = {
+		thresholdPurge: (puzzleData.thresholdPurge ? puzzleData.thresholdPurge : THRESHOLD_SIZE_COMPLEXITY),
 		timeComplexity: (puzzleData.timeComplexity ? puzzleData.timeComplexity : 0),
 		sizeComplexity: 0,
 		sizeComplexityTotal: (puzzleData.sizeComplexityTotal ? puzzleData.sizeComplexityTotal : 0),
@@ -338,15 +339,16 @@ export const solve = (puzzleData) => {
 				openSetContent[accessibleState.arr.toString()] = accessibleState.cost;
 			}
 			runInfo.sizeComplexity = Math.max(openSet.getSize(), runInfo.sizeComplexity);
-			if (runInfo.sizeComplexity > THRESHOLD_SIZE_COMPLEXITY) {
+			if (runInfo.sizeComplexity > runInfo.thresholdPurge) {
 				let nextState = findMaxStepNode(openSet);	
 				let nextPurgeStep = runInfo.purgeStep + nextState.step;
 				let nextSolutionPath = runInfo.solutionPath.concat(retrievePath(nextState));
 				let nextTime = runInfo.time;
 				let nextSizeComplexityTotal = runInfo.sizeComplexity + runInfo.sizeComplexityTotal;
 				let nextTimeComplexity = runInfo.timeComplexity;
+				let nextThresholdPurge = runInfo.thresholdPurge;
 				console.log("Purge - we restart from ", nextState.arr, ", with cost ", nextState.cost);
-				// TODO : remettre imperativement a jour timeComplexity: 341, sizeComplexity: 438
+				//TODO reverif que time complexity est ok
 				openSet = {};
 				closedSet = {};
 				runInfo = {};
@@ -363,6 +365,7 @@ export const solve = (puzzleData) => {
 					time: nextTime,
 					sizeComplexityTotal: nextSizeComplexityTotal,
 					timeComplexity: nextTimeComplexity,
+					thresholdPurge:nextThresholdPurge
 				});
 			}
 		}
