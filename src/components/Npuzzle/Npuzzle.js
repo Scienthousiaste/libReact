@@ -11,7 +11,7 @@ import Solver from './Solver/Solver';
 
 import {MAX_SPEED} from '../../helpers/Npuzzle/defines';
 
-const NPuzzle = () => {
+const Npuzzle = () => {
 	const [state, setState] = useState({
 		snail: null,
 		size: 0,
@@ -29,6 +29,7 @@ const NPuzzle = () => {
 
 	const [playParams, setPlayParams] = useState({
 		play: false,
+		playAuthorised: false,
 		speed: 800,
 	});
 
@@ -67,7 +68,7 @@ const NPuzzle = () => {
 			arrays: arrays,
 			currentIndex: 0,
 		});
-		setPlayParams({...playParams, play: true});
+		setPlayParams({...playParams, play: true, playAuthorised: true});
 		console.log(arrays);
 	};
 
@@ -96,15 +97,16 @@ const NPuzzle = () => {
 	};
 
 	const togglePlayHandler = () => {
-		console.log(!playParams.play);
-		setPlayParams({
-			...playParams,
-			play: !playParams.play,
-		});
+		if (playParams.playAuthorised) {
+			setPlayParams({
+				...playParams,
+				play: !playParams.play,
+			});
+		}
 	};
 
 	const changeStepHandler = (index) => {
-		if (!playState.arrays || index < 0 || index >= playState.arrays.length) return ;
+		if (!playState.arrays || index < 0 || index >= playState.arrays.length) return;
 		setPlayState({
 			...playState,
 			currentIndex: index,
@@ -131,7 +133,7 @@ const NPuzzle = () => {
 
 	const setNewPuzzle = (size, array) => {
 		const snail = computeSnailIteration(size);
-		setPlayParams({...playParams, play: false});
+		setPlayParams({...playParams, play: false, playAuthorised: false});
 		setTimeout(() => {
 			setState({
 				...state,
@@ -163,7 +165,8 @@ const NPuzzle = () => {
 			<div className={classes.Board}>
 				<PuzzleCommands createNewPuzzle={setNewPuzzle} startArray={state.startArray} size={state.size}
 								changeSpeed={onChangeSpeedHandler} speed={playParams.speed}
-								playClicked={togglePlayHandler}/>
+								playClicked={togglePlayHandler} play={playParams.play}
+								playAuthorised={playParams.playAuthorised}/>
 				{tileSet}
 				<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail} solvable={state.solvable}
 						resolved={onResolveHandler}/>
@@ -172,4 +175,4 @@ const NPuzzle = () => {
 	)
 };
 
-export default NPuzzle;
+export default Npuzzle;

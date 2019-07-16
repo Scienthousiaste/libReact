@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
 
-import classes from './PuzzleGenerator.less';
+import { generateRandomArray } from '../../../../../helpers/Npuzzle/functions';
 
-import { generateRandomArray } from '../../../../helpers/Npuzzle/functions';
-
-import Button from '../../../UI/Button/Button';
-import Input from '../../../UI/Input/Input';
+import Part from '../../../../UI/Part/Part';
+import Button from '../../../../UI/Button/Button';
+import Input from '../../../../UI/Input/Input';
 
 const PuzzleGenerator = (props) => {
 
@@ -46,10 +45,10 @@ const PuzzleGenerator = (props) => {
 	};
 
 	return (
-		<div className={classes.PuzzleGenerator}>
+		<Part title="Generate random puzzle">
 			<Input value={state.size} changed={changeSizeHandler} pressEnter={onClickHandler} pressUp={onUpgradeHandler} pressDown={onDowngradeHandler} />
 			<Button clicked={onClickHandler}>Generate</Button>
-		</div>
+		</Part>
 	);
 };
 

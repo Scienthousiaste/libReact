@@ -6,7 +6,7 @@ import {BrowserRouter, Switch, Route} from 'react-router-dom';
 
 import Layout from './components/hoc/Layout/Layout';
 
-import NPuzzle from './components/Npuzzle/Npuzzle';
+import Npuzzle from './components/Npuzzle/Npuzzle';
 
 const App = () => {
 
@@ -15,7 +15,7 @@ const App = () => {
 			<Layout>
 				<div className={classes.App}>
 					<Switch>
-					<Route path={'/'} component={NPuzzle} />
+					<Route path={'/'} component={Npuzzle} />
 					</Switch>
 				</div>
 			</Layout>
