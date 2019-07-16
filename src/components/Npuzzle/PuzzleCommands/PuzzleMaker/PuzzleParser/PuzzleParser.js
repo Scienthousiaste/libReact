@@ -1,8 +1,9 @@
-import {MAX_PUZZLE_SIZE} from '../../../../helpers/Npuzzle/defines';
+import {MAX_PUZZLE_SIZE} from '../../../../../helpers/Npuzzle/defines';
 import React, {useState} from 'react';
-import classes from './PuzzleParser.less';
-import Input from '../../../UI/Input/Input';
-import Button from '../../../UI/Button/Button';
+
+import Part from '../../../../UI/Part/Part';
+import Input from '../../../../UI/Input/Input';
+import Button from '../../../../UI/Button/Button';
 
 const PuzzleParser = (props) => {
 	const [state, setState] = useState({
@@ -105,12 +106,11 @@ const PuzzleParser = (props) => {
 	};
 
 	return (
-		<div className={classes.PuzzleInput}>
-			<p>Input a puzzle here: </p>
+		<Part title="Parse array">
 			<Input elementType={'textarea'} value={state.input} changed={changeHandler}/>
 			<Button clicked={parseInput}>Parse puzzle</Button>
-		</div>
-	)
+		</Part>
+	);
 };
 
 export default PuzzleParser;

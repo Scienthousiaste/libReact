@@ -3,14 +3,15 @@ MATTHIEU
 2 - TRY TO IMAGE CROP
 3 - REMAKE BOXES TO INCREASE THE USER EXPERIENCE
 4 - PRINT INFOS ABOUT THE GAME
+5 - UNSAFE MOD : tab to toggle -> params : memory flow : 100 k -> 1 m ||
 
 
 
 Tim
-(DONE) 1 - pas réinsérer les états déjà dans l'openset
-(DONE) 2 - update Manhattan distance plutôt que calcul de 0
-3 - update linear conflicts plutôt que calcul de 0
-(DONE - reverif) 4 - infos de l'algo a transmettre (nombre d'états ouverts)
+1 - pas réinsérer les états déjà dans l'openset															|| DONE
+2 - update Manhattan distance plutôt que calcul de 0													|| DONE
+3 - update linear conflicts plutôt que calcul de 0														|| FAIL
+4 - infos de l'algo a transmettre (nombre d'états ouverts)												|| DONE
 5 - Greedy search
 6 - S'assurer que la page ne crash jamais / permettre de quitter la resolution
 7 - uniform cost
@@ -21,5 +22,6 @@ TOGEsemble
 5 - ALGOS INFOS en live (SOLVE en component)
 
 BUGS - interface
-- quand on lance un autre solve pendant que ça solve 
+- quand on lance un autre solve pendant que ça solve 													|| à verifier
 - spinner/truc qui s'affiche pendant que l'algo résoud
+- pause se trigger 2x quand dans un boutton
