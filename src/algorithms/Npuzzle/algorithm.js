@@ -195,7 +195,6 @@ export const updateLinearConflicts = (oldArr, newArr, size, snail, current, prev
 }
 
 export const uniformCostHeuristic = () => {
-	alert('bl');
 	return 0;
 }
 
@@ -302,7 +301,7 @@ export const greedy = (puzzleData) => {
 }
 
 export const uniform = (puzzleData) => {
-	solve({...puzzleData, heuristic:uniformCostHeuristic});
+	return solve({...puzzleData, heuristic:uniformCostHeuristic});
 }
 
 export const solve = (puzzleData) => {
