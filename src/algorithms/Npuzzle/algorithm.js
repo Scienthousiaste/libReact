@@ -2,30 +2,11 @@ import PriorityQueue from '../../helpers/Npuzzle/PriorityQueue';
 import doTestsPriorityQueue from '../../tests/helpers/Npuzzle/PriorityQueue.test';
 import doTestsLinearConflicts from '../../tests/algorithms/Npuzzle/algorithm.test';
 import {THRESHOLD_SIZE_COMPLEXITY} from '../../helpers/Npuzzle/defines';
+
 /*
- * Test the program on some puzzles, some from the students (the subject requires that they bring some) and some using the generator in the subject.
 
 The students have implemented an option to do a greedy search and are able to explain it.
 The students have implemented an option to do a uniform-cost search and are able to explain it.
-
-
-• At the end of the search, the program has to provide the following values:
-◦ Total number of states ever selected in the "opened" set (complexity in time)
-◦ Maximum number of states ever represented in memory at the same time
-during the search (complexity in size)
-◦ Number of moves required to transition from the initial state to the final state,
-	according to the search
-◦ The ordered sequence of states that make up the solution, according to the
-search
-◦ The puzzle may be unsolvable, in which case you have to inform the user and
-exit
-
-Output correctness
-The students have the output required by the subject, which is:
-	- Complexity in time
-	- Complexity in size
-	- Number of moves from initial state to solution
-	- Ordered sequence of states that make up the solution
 
 */
 
@@ -56,7 +37,6 @@ const isInClosedSetOrLowerCostInOpenSet = (stringArr, cost, closedSet, openSetCo
 };
 
 const retrievePath = (finalState) => {
-	//	console.log(finalState);
 	let path = [];
 	let curState = finalState;
 	while (curState != null) {
@@ -73,18 +53,18 @@ const foundSolution = (solutionState, runInfo) => {
 	return runInfo.solutionPath.concat(retrievePath(solutionState));
 };
 
-const accessibleStates = (curState, size, weight, heuristic, snail) => {
+const accessibleStates = (curState, data) => {
+
 	let ret = [];
-	let dir = [1, -1, size, -size];
+	let dir = [1, -1, data.size, -data.size];
 
 	for (let i = 0; i < dir.length; i++) {
 		let d = dir[i];
 		let newIdx = curState.idxZero + d;
-
-		let x_cur_zero = curState.idxZero % size;
-		let y_cur_zero = Math.floor(curState.idxZero / size);
-		let x_new_zero = newIdx % size;
-		let y_new_zero = Math.floor(newIdx / size);
+		let x_cur_zero = curState.idxZero % data.size;
+		let y_cur_zero = Math.floor(curState.idxZero / data.size);
+		let x_new_zero = newIdx % data.size;
+		let y_new_zero = Math.floor(newIdx / data.size);
 
 		if (!(newIdx < 0 || newIdx >= curState.arr.length
 			|| (x_cur_zero !== x_new_zero && y_cur_zero !== y_new_zero))) {
@@ -130,7 +110,7 @@ const accessibleStates = (curState, size, weight, heuristic, snail) => {
 			const newState = {
 				arr:newArr,
 				idxZero: curState.idxZero + d,
-				cost: newStep + weight * heuristic(newArr, size, snail),
+				cost: newStep + data.weight * data.heuristic(newArr, data.size, data.snail),
 				step: newStep,
 				previousState: curState,
 			};
@@ -214,6 +194,12 @@ export const updateLinearConflicts = (oldArr, newArr, size, snail, current, prev
 	return ret1 + ret2;
 }
 
+export const uniformCostHeuristic = () => {
+	alert('bl');
+	return 0;
+}
+
+
 export const computeLinearConflicts = (arr, size, snail) => {
 	let conflicts = 0;
 	for (let i = 0; i < arr.length - 1; i++) {
@@ -279,12 +265,49 @@ export const computeRelaxedAdjacency = (arr, size, snail) => {
 	return ret;
 }
 
-export const solve = (puzzleData) => {
-	/*//TODO infos a transmettre
-	let max_size = 0;
-	let n_iter = 0;
-	*/
+export const greedy = (puzzleData) => {
+	displayMessage("I'm greeeeeedy");
+	/*
 	let runInfo = {
+		...puzzleData,
+		time: Date.now(),
+		timeComplexity: 0,
+		sizeComplexity: 0,
+		closedSet: {},
+		goalState: goalStateString(puzzleData),
+	}
+
+	let initialState = {
+		arr: runInfo.arr,
+		idxZero: runInfo.arr.indexOf(0),
+		step: 0,
+		previousState: null
+	};
+	closedSet[initialState.arr.toString()] = initialState.step;
+
+	if (initialState.arr.toString() === goalState) {
+		displayMessage("This is already the solution state");
+		return;
+	}
+
+	const accessibleStatesFromInitial = accessibleStates(initialState, runInfo.size, runInfo.weight, runInfo.heuristic, runInfo.snail);
+	for (let i = 0; i < accessibleStatesFromInitial.length; i++) {
+		if (accessibleStatesFromInitial[i].arr.toString() === runInfo.goalState) {
+			return foundSolution(accessibleStatesFromInitial[i], runInfo);
+		}
+		openSet.enqueue(accessibleStatesFromInitial[i], accessibleStatesFromInitial[i].cost);
+		openSetContent[accessibleStatesFromInitial[i].arr.toString()] = accessibleStatesFromInitial[i].cost;
+	}
+	*/
+}
+
+export const uniform = (puzzleData) => {
+	solve({...puzzleData, heuristic:uniformCostHeuristic});
+}
+
+export const solve = (puzzleData) => {
+	let runInfo = {
+		...puzzleData,
 		thresholdPurge: (puzzleData.thresholdPurge ? puzzleData.thresholdPurge : THRESHOLD_SIZE_COMPLEXITY),
 		timeComplexity: (puzzleData.timeComplexity ? puzzleData.timeComplexity : 0),
 		sizeComplexity: 0,
@@ -292,8 +315,14 @@ export const solve = (puzzleData) => {
 		purgeStep: (puzzleData.purgeStep ? puzzleData.purgeStep : 0),
 		solutionPath: (puzzleData.solutionPath ? puzzleData.solutionPath : []),
 		time: (puzzleData.time ? puzzleData.time : Date.now()),
+		goalState: (puzzleData.goalState ? puzzleData.goalState : goalStateString(puzzleData)),
 	};
 
+	/* CLEANING
+	- should not use puzzleData anymore, only runInfo 
+	- openSet, closedSet, etc in runInfo
+	*/
+	
 	let [arr, size, snail, heuristic, weight] = [puzzleData.arr, puzzleData.size, puzzleData.snail, puzzleData.heuristic, puzzleData.weight];
 	let openSet = new PriorityQueue();
 	let openSetContent = {};
@@ -307,15 +336,14 @@ export const solve = (puzzleData) => {
 	};
 
 	closedSet[initialState.arr.toString()] = initialState.cost;
-	const goalState = goalStateString(puzzleData);
-	if (initialState.arr.toString() === goalState) {
+	if (initialState.arr.toString() === runInfo.goalState) {
 		displayMessage("This is already the solution state");
 		return;
 	}
 
-	const accessibleStatesFromInitial = accessibleStates(initialState, size, weight, heuristic, snail);
+	const accessibleStatesFromInitial = accessibleStates(initialState, puzzleData);
 	for (let i = 0; i < accessibleStatesFromInitial.length; i++) {
-		if (accessibleStatesFromInitial[i].arr.toString() === goalState) {
+		if (accessibleStatesFromInitial[i].arr.toString() === runInfo.goalState) {
 			return foundSolution(accessibleStatesFromInitial[i], runInfo);
 		}
 		openSet.enqueue(accessibleStatesFromInitial[i], accessibleStatesFromInitial[i].cost);
@@ -323,16 +351,16 @@ export const solve = (puzzleData) => {
 	}
 
 	while (!openSet.isEmpty()) {
-		let state = openSet.dequeue();
 		runInfo.timeComplexity++;
-		let nextStates = accessibleStates(state.content, size, weight, heuristic, snail);
+		const state = openSet.dequeue();
+		const nextStates = accessibleStates(state.content, puzzleData);
 	
 		for (let i = 0; i < nextStates.length; i++) {
-			let accessibleState = nextStates[i];
-			if (accessibleState.arr.toString() === goalState) {
+			const accessibleState = nextStates[i];
+			if (accessibleState.arr.toString() === runInfo.goalState) {
 				return foundSolution(accessibleState, runInfo);
 			}
-			let stringArr = accessibleState.arr.toString();
+			const stringArr = accessibleState.arr.toString();
 			if (!isInClosedSetOrLowerCostInOpenSet(stringArr, accessibleState.cost, closedSet, openSetContent)) {
 				closedSet[accessibleState.arr.toString()] = accessibleState.cost;
 				openSet.enqueue(accessibleState, accessibleState.cost);
@@ -340,33 +368,25 @@ export const solve = (puzzleData) => {
 			}
 			runInfo.sizeComplexity = Math.max(openSet.getSize(), runInfo.sizeComplexity);
 			if (runInfo.sizeComplexity > runInfo.thresholdPurge) {
-				let nextState = findMaxStepNode(openSet);	
-				let nextPurgeStep = runInfo.purgeStep + nextState.step;
-				let nextSolutionPath = runInfo.solutionPath.concat(retrievePath(nextState));
-				let nextTime = runInfo.time;
-				let nextSizeComplexityTotal = runInfo.sizeComplexity + runInfo.sizeComplexityTotal;
-				let nextTimeComplexity = runInfo.timeComplexity;
-				let nextThresholdPurge = runInfo.thresholdPurge;
+				const nextState = findMaxStepNode(openSet);	
+				const nextRunInfo = {
+					...runInfo,
+					heuristic: heuristic,
+					snail: snail,
+					size: size,
+					weight: weight,
+					arr: nextState.arr,
+					purgeStep: runInfo.purgeStep + nextState.step,
+					solutionPath: runInfo.solutionPath.concat(retrievePath(nextState)),
+					sizeComplexityTotal: runInfo.sizeComplexity + runInfo.sizeComplexityTotal,
+				}	
 				console.log("Purge - we restart from ", nextState.arr, ", with cost ", nextState.cost);
 				//TODO reverif que time complexity est ok
 				openSet = {};
+				openSetContent = {};
 				closedSet = {};
 				runInfo = {};
-				openSetContent = [];
-
-				return solve({
-					arr: nextState.arr,
-					size: size,
-					snail: snail,
-					heuristic: heuristic,
-					weight: weight,
-					purgeStep: nextPurgeStep,
-					solutionPath: nextSolutionPath,
-					time: nextTime,
-					sizeComplexityTotal: nextSizeComplexityTotal,
-					timeComplexity: nextTimeComplexity,
-					thresholdPurge:nextThresholdPurge
-				});
+				return solve(nextRunInfo);
 			}
 		}
 	}

@@ -4,7 +4,7 @@ import Button from '../../UI/Button/Button';
 import Box from '../../UI/Box/Box';
 import SolverCommand from './SolverCommands/SolverCommands';
 
-import {computeLinearConflicts, computeManhattanDistance, computeRelaxedAdjacency, solve} from '../../../algorithms/Npuzzle/algorithm';
+import {computeLinearConflicts, computeManhattanDistance, computeRelaxedAdjacency, solve, greedy} from '../../../algorithms/Npuzzle/algorithm';
 
 import classes from './Solver.less';
 
@@ -22,9 +22,9 @@ const Solver = (props) => {
 		{value: 'relaxedAdjacency', func: computeRelaxedAdjacency},
 	];
 	const algorithms = [
-		{value: 'weighted A*'},
-		{value: 'greedy'},
-		{value: 'uniform cost search'},
+		{value: 'weighted A*', func: solve},
+		{value: 'greedy', func: greedy},
+		{value: 'uniform cost search', func: solve},
 	];
 
 	useEffect(() => {
@@ -48,7 +48,7 @@ const Solver = (props) => {
 	};
 
 	const resolveHandler = () => {
-		const array = solve({
+		const array = algorithms[state.selectedAlgorithm].func({
 			arr: props.arrayNumbers,
 			size: props.size,
 			snail: props.snail,
