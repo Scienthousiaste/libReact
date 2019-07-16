@@ -5,8 +5,8 @@ import Button from '../../../../UI/Button/Button';
 
 
 const restartPuzzle = (props) => (
-	<Part title="Restart Puzzle">
-		<Button clicked={() => props.createNewPuzzle(props.size, props.startArray)}>Restart</Button>
+	<Part>
+		<Button clicked={() => props.createNewPuzzle(props.size, props.startArray)} color="primary">Restart</Button>
 
 	</Part>
 );

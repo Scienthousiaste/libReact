@@ -4,7 +4,7 @@ import Part from '../../../../UI/Part/Part';
 
 const playToggle = (props) => (
 	<Part>
-		<Button clicked={props.playClicked} disabled={!props.playAuthorised} type={props.play ? 'Danger' : 'Success'}>{props.play ? 'Pause' : 'Play'}</Button>
+		<Button clicked={props.playClicked} disabled={!props.playAuthorised} color={props.play ? 'secondary' : 'primary'}>{props.play ? 'Pause' : 'Play'}</Button>
 	</Part>
 );
 

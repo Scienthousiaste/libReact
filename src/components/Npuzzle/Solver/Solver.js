@@ -1,10 +1,16 @@
 import React, {useState, useEffect} from 'react';
 
-import Button from '../../UI/Button/Button';
-import Box from '../../UI/Box/Box';
 import SolverCommand from './SolverCommands/SolverCommands';
+import SolveInfos from './SolveInfos/SolveInfos';
 
-import {computeLinearConflicts, computeManhattanDistance, computeRelaxedAdjacency, solve, greedy} from '../../../algorithms/Npuzzle/algorithm';
+import {
+	computeLinearConflicts,
+	computeManhattanDistance,
+	computeRelaxedAdjacency,
+	solve,
+	greedy,
+	uniform
+} from '../../../algorithms/Npuzzle/algorithm';
 
 import classes from './Solver.less';
 
@@ -22,9 +28,9 @@ const Solver = (props) => {
 		{value: 'relaxedAdjacency', func: computeRelaxedAdjacency},
 	];
 	const algorithms = [
-		{value: 'weighted A*', func: solve},
-		{value: 'greedy', func: greedy},
-		{value: 'uniform cost search', func: solve},
+		{value: 'weighted A*', func: solve, useHeuristic: true},
+		{value: 'greedy', func: greedy, useHeuristic: true},
+		{value: 'uniform cost search', func: uniform, useHeuristic: false},
 	];
 
 	useEffect(() => {
@@ -48,43 +54,36 @@ const Solver = (props) => {
 	};
 
 	const resolveHandler = () => {
-		const array = algorithms[state.selectedAlgorithm].func({
-			arr: props.arrayNumbers,
-			size: props.size,
-			snail: props.snail,
-			weight: state.weight,
-			heuristic: heuristics[state.selectedHeuristic].func,
-			algorithm: algorithms[state.selectedAlgorithm]
-		});
-		if (array) {
-			props.resolved(array);
-		}
+		props.waiting();
+		setTimeout(() => {
+			const array = algorithms[state.selectedAlgorithm].func({
+				arr: props.arrayNumbers,
+				size: props.size,
+				snail: props.snail,
+				weight: state.weight,
+				heuristic: heuristics[state.selectedHeuristic].func,
+			});
+			if (array) {
+				props.resolved(array);
+			}
+		}, 0);
 	};
 
 	return (
 		<div className={classes.Solver}>
 			<SolverCommand
 				heuristics={heuristics}
-				selectedHeuristic={state.selectedHeuristic} 
+				selectedHeuristic={state.selectedHeuristic}
 				algorithms={algorithms}
 				selectedAlgorithm={state.selectedAlgorithm}
 				weight={state.weight}
 				heuristicChanged={changeHeuristicHandler}
 				algorithmChanged={changeAlgorithmHandler}
 				weightChanged={changeWeightHandler}
+				solvable={props.solvable}
+				solve={resolveHandler}
 			/>
-			<Box>
-				{
-					props.solvable ? <Button clicked={resolveHandler}>Solve</Button>
-						: <p>Unsolvable</p>
-				}
-				<Button clicked={() => alert(computeManhattanDistance(props.arrayNumbers, props.size, props.snail))}>Manhattan
-					Distance</Button>
-				<Button clicked={() => alert(computeLinearConflicts(props.arrayNumbers, props.size, props.snail))}>Linear
-					Conflicts</Button>
-				<Button clicked={() => alert(computeRelaxedAdjacency(props.arrayNumbers, props.size, props.snail))}>Relaxed
-					Adjacency</Button>
-			</Box>
+			<SolveInfos/>
 		</div>
 	)
 };

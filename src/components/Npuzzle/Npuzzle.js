@@ -63,7 +63,18 @@ const Npuzzle = () => {
 		}
 	}, [playState, playParams.play]);
 
+	const onWaitingResolve = () => {
+		setState({
+			...state,
+			loading: true,
+		});
+	};
+
 	const onResolveHandler = (arrays) => {
+		setState({
+			...state,
+			loading: false,
+		});
 		setPlayState({
 			arrays: arrays,
 			currentIndex: 0,
@@ -83,12 +94,15 @@ const Npuzzle = () => {
 		console.log(event.key);
 		switch (event.key) {
 			case ' ' :
+				event.preventDefault();
 				togglePlayHandler();
 				break;
 			case 'ArrowLeft' :
+				event.preventDefault();
 				changeStepHandler(playState.currentIndex - 1);
 				break;
 			case 'ArrowRight':
+				event.preventDefault();
 				changeStepHandler(playState.currentIndex + 1);
 				break;
 			default:
@@ -133,6 +147,7 @@ const Npuzzle = () => {
 
 	const setNewPuzzle = (size, array) => {
 		const snail = computeSnailIteration(size);
+		let time = playParams.play ? 10 + MAX_SPEED - playParams.speed : 0;
 		setPlayParams({...playParams, play: false, playAuthorised: false});
 		setTimeout(() => {
 			setState({
@@ -148,7 +163,7 @@ const Npuzzle = () => {
 				arrays: null,
 				currentIndex: 0,
 			});
-		}, 100);
+		}, time);
 
 	};
 
@@ -168,8 +183,8 @@ const Npuzzle = () => {
 								playClicked={togglePlayHandler} play={playParams.play}
 								playAuthorised={playParams.playAuthorised}/>
 				{tileSet}
-				<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail} solvable={state.solvable}
-						resolved={onResolveHandler}/>
+				<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail} solvable={playParams.play ? false : state.solvable}
+						resolved={onResolveHandler} waiting={onWaitingResolve}/>
 			</div>
 		</div>
 	)
