@@ -33,7 +33,7 @@ const logTime = (runInfo) => {
 };
 
 const isInClosedSetOrLowerCostInOpenSet = (stringArr, cost, closedSet, openSetContent) => {
-	return (closedSet[stringArr] || (openSetContent[stringArr] < cost));
+	return (closedSet[stringArr] || (openSetContent && openSetContent[stringArr] < cost));
 };
 
 const retrievePath = (finalState) => {
@@ -265,39 +265,64 @@ export const computeRelaxedAdjacency = (arr, size, snail) => {
 }
 
 export const greedy = (puzzleData) => {
-	displayMessage("I'm greeeeeedy");
-	/*
-	let runInfo = {
+	
+	let data = {
 		...puzzleData,
 		time: Date.now(),
 		timeComplexity: 0,
 		sizeComplexity: 0,
 		closedSet: {},
 		goalState: goalStateString(puzzleData),
+		bestCost: Infinity,
+		best: null,
+		openSet: new PriorityQueue()
 	}
 
 	let initialState = {
-		arr: runInfo.arr,
-		idxZero: runInfo.arr.indexOf(0),
+		arr: data.arr,
+		idxZero: data.arr.indexOf(0),
 		step: 0,
 		previousState: null
 	};
-	closedSet[initialState.arr.toString()] = initialState.step;
+	data.closedSet[initialState.arr.toString()] = initialState.step;
 
-	if (initialState.arr.toString() === goalState) {
+	if (initialState.arr.toString() === data.goalState) {
 		displayMessage("This is already the solution state");
 		return;
 	}
 
-	const accessibleStatesFromInitial = accessibleStates(initialState, runInfo.size, runInfo.weight, runInfo.heuristic, runInfo.snail);
+	const accessibleStatesFromInitial = accessibleStates(initialState, puzzleData);
 	for (let i = 0; i < accessibleStatesFromInitial.length; i++) {
-		if (accessibleStatesFromInitial[i].arr.toString() === runInfo.goalState) {
-			return foundSolution(accessibleStatesFromInitial[i], runInfo);
+		if (accessibleStatesFromInitial[i].arr.toString() === data.goalState) {
+			return foundSolution(accessibleStatesFromInitial[i], data);
 		}
-		openSet.enqueue(accessibleStatesFromInitial[i], accessibleStatesFromInitial[i].cost);
-		openSetContent[accessibleStatesFromInitial[i].arr.toString()] = accessibleStatesFromInitial[i].cost;
+		data.best = data.bestCost < accessibleStatesFromInitial[i].cost ? data.best : accessibleStatesFromInitial[i];
 	}
-	*/
+	data.openSet.enqueue(data.best, data.best.cost);
+	data.closedSet[data.best.arr.toString()] = data.best.cost;
+
+	while (data.best.arr.toString() !== data.goalState) {
+		data.timeComplexity += 1;
+		const nextStates = accessibleStates(data.best, puzzleData);
+	
+		for (let i = 0; i < nextStates.length; i++) {
+			const accessibleState = nextStates[i];
+			if (accessibleState.arr.toString() === data.goalState) {
+				return foundSolution(accessibleState, data);
+			}
+			const stringArr = accessibleState.arr.toString();
+
+
+			//const isInClosedSetOrLowerCostInOpenSet = (stringArr, cost, closedSet, openSetContent) => {
+			if (!isInClosedSetOrLowerCostInOpenSet(stringArr, accessibleState.cost, data.closedSet, null)) {
+				data.best = data.bestCost < accessibleStatesFromInitial[i].cost ? data.best : accessibleStatesFromInitial[i];
+			}
+		}
+		data.openSet.enqueue(data.best, data.best.cost);
+		data.closedSet[data.best.arr.toString()] = data.best.cost;
+		data.sizeComplexity = Math.max(data.openSet.getSize(), data.sizeComplexity);
+	}
+	displayMessage("There is no solution to this puzzle");
 }
 
 export const uniform = (puzzleData) => {
