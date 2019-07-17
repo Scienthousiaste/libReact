@@ -5,6 +5,10 @@ const Tile = (props) => {
 
     const tileClasses = [classes.Tile];
 
+    if (props.tileClass) {
+    	tileClasses.push(classes[props.tileClass]);
+	}
+
     if (props.val) {
     	switch (props.val % 2) {
 			case 0 : tileClasses.push(classes.Even); break;
