@@ -71,17 +71,17 @@ const Npuzzle = () => {
 		});
 	};
 
-	const onResolveHandler = (arrays) => {
+	const onResolveHandler = (solution) => {
 		setState({
 			...state,
 			loading: false,
 		});
 		setPlayState({
-			arrays: arrays,
+			arrays: solution.path,
 			currentIndex: 0,
 		});
 		setPlayParams({...playParams, play: true, playAuthorised: true});
-		console.log(arrays);
+		console.log(solution);
 	};
 
 	const onChangeSpeedHandler = (speed) => {
