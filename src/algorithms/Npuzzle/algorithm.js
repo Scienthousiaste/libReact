@@ -50,7 +50,7 @@ const foundSolution = (solutionState, runInfo) => {
 	logTime(runInfo);
 	displayMessage("Found solution on step " + Number(Number(runInfo.purgeStep) + Number(solutionState.step)));
 	console.log(runInfo);
-	return runInfo.solutionPath.concat(retrievePath(solutionState));
+		return runInfo.solutionPath.concat(retrievePath(solutionState));
 };
 
 const accessibleStates = (curState, data) => {
@@ -106,11 +106,12 @@ const accessibleStates = (curState, data) => {
 			};
 			*/
 
-			let newStep = curState.step + 1;
+			const newStep = curState.step + 1;
+			const newCost = data.stepMultiplier * newStep + data.weight * data.heuristic(newArr, data.size, data.snail);
 			const newState = {
 				arr:newArr,
 				idxZero: curState.idxZero + d,
-				cost: newStep + data.weight * data.heuristic(newArr, data.size, data.snail),
+				cost: newCost, 
 				step: newStep,
 				previousState: curState,
 			};
@@ -265,7 +266,8 @@ export const computeRelaxedAdjacency = (arr, size, snail) => {
 }
 
 export const greedy = (puzzleData) => {
-	
+	return solve({...puzzleData, greedy:true});
+	/*
 	let data = {
 		...puzzleData,
 		time: Date.now(),
@@ -285,7 +287,6 @@ export const greedy = (puzzleData) => {
 		previousState: null
 	};
 	data.closedSet[initialState.arr.toString()] = initialState.step;
-
 	if (initialState.arr.toString() === data.goalState) {
 		displayMessage("This is already the solution state");
 		return;
@@ -303,26 +304,27 @@ export const greedy = (puzzleData) => {
 
 	while (data.best.arr.toString() !== data.goalState) {
 		data.timeComplexity += 1;
-		const nextStates = accessibleStates(data.best, puzzleData);
+		const state = data.openSet.dequeue();
+		const nextStates = accessibleStates(state.content, data);
 	
 		for (let i = 0; i < nextStates.length; i++) {
 			const accessibleState = nextStates[i];
+			console.log(accessibleState);
 			if (accessibleState.arr.toString() === data.goalState) {
 				return foundSolution(accessibleState, data);
 			}
 			const stringArr = accessibleState.arr.toString();
 
-
-			//const isInClosedSetOrLowerCostInOpenSet = (stringArr, cost, closedSet, openSetContent) => {
-			if (!isInClosedSetOrLowerCostInOpenSet(stringArr, accessibleState.cost, data.closedSet, null)) {
-				data.best = data.bestCost < accessibleStatesFromInitial[i].cost ? data.best : accessibleStatesFromInitial[i];
-			}
+			//if (!isInClosedSetOrLowerCostInOpenSet(stringArr, accessibleState.cost, data.closedSet, null)) {
+				data.best = data.bestCost < accessibleState.cost ? data.best : accessibleState;
+			//}
 		}
 		data.openSet.enqueue(data.best, data.best.cost);
 		data.closedSet[data.best.arr.toString()] = data.best.cost;
 		data.sizeComplexity = Math.max(data.openSet.getSize(), data.sizeComplexity);
 	}
 	displayMessage("There is no solution to this puzzle");
+	*/
 }
 
 export const uniform = (puzzleData) => {
@@ -340,6 +342,7 @@ export const solve = (puzzleData) => {
 		solutionPath: (puzzleData.solutionPath ? puzzleData.solutionPath : []),
 		time: (puzzleData.time ? puzzleData.time : Date.now()),
 		goalState: (puzzleData.goalState ? puzzleData.goalState : goalStateString(puzzleData)),
+		stepMultiplier: (puzzleData.greedy === true ? 0 : 1),
 	};
 
 	/* CLEANING
@@ -365,7 +368,7 @@ export const solve = (puzzleData) => {
 		return;
 	}
 
-	const accessibleStatesFromInitial = accessibleStates(initialState, puzzleData);
+	const accessibleStatesFromInitial = accessibleStates(initialState, runInfo);
 	for (let i = 0; i < accessibleStatesFromInitial.length; i++) {
 		if (accessibleStatesFromInitial[i].arr.toString() === runInfo.goalState) {
 			return foundSolution(accessibleStatesFromInitial[i], runInfo);
@@ -377,7 +380,7 @@ export const solve = (puzzleData) => {
 	while (!openSet.isEmpty()) {
 		runInfo.timeComplexity++;
 		const state = openSet.dequeue();
-		const nextStates = accessibleStates(state.content, puzzleData);
+		const nextStates = accessibleStates(state.content, runInfo);
 	
 		for (let i = 0; i < nextStates.length; i++) {
 			const accessibleState = nextStates[i];
