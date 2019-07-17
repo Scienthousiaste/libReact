@@ -12,11 +12,12 @@ Tim
 2 - update Manhattan distance plutôt que calcul de 0													|| DONE
 3 - update linear conflicts plutôt que calcul de 0														|| FAIL
 4 - infos de l'algo a transmettre (nombre d'états ouverts)												|| DONE
-5 - Greedy search
+5 - Greedy search																						|| DONE
 6 - S'assurer que la page ne crash jamais / permettre de quitter la resolution
-7 - uniform cost
+7 - uniform cost																						|| DONE
 8 - Passer les données d'un solve a l'autre de maniere plus clean
 9 - mettre le threshold purge en variable modifiable
+10 - je crois qu'il y a duplication d'etat au moment de la purge
 
 TOGEsemble
 5 - ALGOS INFOS en live (SOLVE en component)
