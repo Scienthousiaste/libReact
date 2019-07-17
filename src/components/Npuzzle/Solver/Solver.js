@@ -56,15 +56,15 @@ const Solver = (props) => {
 	const resolveHandler = () => {
 		props.waiting();
 		setTimeout(() => {
-			const array = algorithms[state.selectedAlgorithm].func({
+			const solution = algorithms[state.selectedAlgorithm].func({
 				arr: props.arrayNumbers,
 				size: props.size,
 				snail: props.snail,
 				weight: state.weight,
 				heuristic: heuristics[state.selectedHeuristic].func,
 			});
-			if (array) {
-				props.resolved(array);
+			if (solution) {
+				props.resolved(solution);
 			}
 		}, 0);
 	};

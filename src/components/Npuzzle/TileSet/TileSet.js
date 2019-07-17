@@ -7,7 +7,7 @@ const tileSet = (props) => {
     const tileArray = [...Array(props.size).keys()].map(x => {
         return (
             <div className={classes.row} key={x}>
-                {props.arrayNumbers.slice(x * props.size, (x + 1) * props.size).map(v => <Tile val={v} key={v}  clicked={props.clicked} fontSize={360 / props.size}/>)}
+                {props.arrayNumbers.slice(x * props.size, (x + 1) * props.size).map(v => <Tile tileClass={props.tileClass} val={v} key={v}  clicked={props.clicked} fontSize={360 / props.size}/>)}
             </div>
         )
     });

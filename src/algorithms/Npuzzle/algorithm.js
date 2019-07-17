@@ -46,12 +46,10 @@ const retrievePath = (finalState) => {
 	return path;
 };
 
-const foundSolution = (solutionState, runInfo) => {
-	logTime(runInfo);
-	displayMessage("Found solution on step " + Number(Number(runInfo.purgeStep) + Number(solutionState.step)));
-	console.log(runInfo);
-		return runInfo.solutionPath.concat(retrievePath(solutionState));
-};
+const foundSolution = (solutionState, runInfo) => ({
+	path: runInfo.solutionPath.concat(retrievePath(solutionState)),
+	infos: runInfo,
+});
 
 const accessibleStates = (curState, data) => {
 

@@ -10,6 +10,7 @@ import PuzzleCommands from './PuzzleCommands/PuzzleCommands';
 import Solver from './Solver/Solver';
 
 import {MAX_SPEED} from '../../helpers/Npuzzle/defines';
+import TileSetLoading from "./TileSetLoading/TileSetLoading";
 
 const Npuzzle = () => {
 	const [state, setState] = useState({
@@ -70,17 +71,17 @@ const Npuzzle = () => {
 		});
 	};
 
-	const onResolveHandler = (arrays) => {
+	const onResolveHandler = (solution) => {
 		setState({
 			...state,
 			loading: false,
 		});
 		setPlayState({
-			arrays: arrays,
+			arrays: solution.path,
 			currentIndex: 0,
 		});
 		setPlayParams({...playParams, play: true, playAuthorised: true});
-		console.log(arrays);
+		console.log(solution);
 	};
 
 	const onChangeSpeedHandler = (speed) => {
@@ -121,11 +122,14 @@ const Npuzzle = () => {
 
 	const changeStepHandler = (index) => {
 		if (!playState.arrays || index < 0 || index >= playState.arrays.length) return;
-		setPlayState({
-			...playState,
-			currentIndex: index,
-		});
-		setArrayState(playState.arrays[index]);
+		setPlayParams({...playParams, play: false});
+		if (!playParams.play) {
+			setPlayState({
+				...playState,
+				currentIndex: index,
+			});
+			setArrayState(playState.arrays[index]);
+		}
 	};
 
 	const trySwap = (value) => {
@@ -167,7 +171,7 @@ const Npuzzle = () => {
 
 	};
 
-	let tileSet = <Spinner/>;
+	let tileSet = <TileSetLoading size={state.size} />;
 
 	if (!state.loading) {
 		tileSet = (
@@ -181,9 +185,12 @@ const Npuzzle = () => {
 				<PuzzleCommands createNewPuzzle={setNewPuzzle} startArray={state.startArray} size={state.size}
 								changeSpeed={onChangeSpeedHandler} speed={playParams.speed}
 								playClicked={togglePlayHandler} play={playParams.play}
-								playAuthorised={playParams.playAuthorised}/>
+								playAuthorised={playParams.playAuthorised}
+								currentStep={playState.currentIndex} maxStep={playState.arrays ? playState.arrays.length : null}
+								stepChanged={changeStepHandler} />
 				{tileSet}
-				<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail} solvable={playParams.play ? false : state.solvable}
+				<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail}
+						solvable={playParams.play ? false : state.solvable}
 						resolved={onResolveHandler} waiting={onWaitingResolve}/>
 			</div>
 		</div>
