@@ -1,7 +1,5 @@
 import React from 'react';
 
-import classes from './Radio.less';
-
 import Radio from '@material-ui/core/Radio';
 import {RadioGroup} from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";

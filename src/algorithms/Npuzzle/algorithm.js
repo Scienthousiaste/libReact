@@ -20,10 +20,6 @@ const goalStateString = (puzzleData) => {
 	return computeGoalState(puzzleData.snail).toString();
 };
 
-const logTime = (runInfo) => {
-	console.log("Time to find the solution: " + ((Number(Date.now()) - Number(runInfo.time)) / 1000) + "s");
-};
-
 const isInClosedSetOrLowerCostInOpenSet = (stringArr, cost, closedSet, openSetContent) => {
 	return (closedSet[stringArr] || (openSetContent && openSetContent[stringArr] < cost));
 };

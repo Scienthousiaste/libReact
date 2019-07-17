@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classes from './Tile.less';
 
 const Tile = (props) => {
 
     const tileClasses = [classes.Tile];
 
-    if (props.tileClass) {
+    const [ state, setState ] = useState({
+		hover: false,
+	});
+
+    const onHoverHandler = () => setState({...state, hover: true});
+
+	const onLeaveHandler = () => setState({...state, hover: false});
+
+
+	if (props.tileClass) {
     	tileClasses.push(classes[props.tileClass]);
 	}
 
@@ -20,10 +29,10 @@ const Tile = (props) => {
 	}
 
     return (
-        <div className={tileClasses.join(' ')} style={{fontSize: props.fontSize.toString() + 'px' }} onClick={() => props.clicked(props.val)} >
-            {props.val === 0 ? '': props.val}
+        <div className={tileClasses.join(' ')} onMouseOver={onHoverHandler} onMouseLeave={onLeaveHandler} style={{fontSize: props.fontSize.toString() + 'px' }} onClick={() => props.clicked(props.val)} >
+            {props.val === 0 || (props.hideValue && !state.hover) ? null : props.val}
         </div>
-    )
+    );
 };
 
 export default Tile;

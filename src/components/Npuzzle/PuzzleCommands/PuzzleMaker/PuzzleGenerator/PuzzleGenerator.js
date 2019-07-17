@@ -10,7 +10,7 @@ import CheckBox from '../../../../UI/CheckBox/CheckBox';
 const PuzzleGenerator = (props) => {
 
 	const [state, setState] = useState({
-		size: 0,
+		size: 5,
 		forceValidity: true,
 	});
 
@@ -30,7 +30,7 @@ const PuzzleGenerator = (props) => {
 		if (isNaN(value)) return;
 		if (value) {
 			let size = parseInt(value);
-			if (size > 20) {size = 20}
+			if (size > 10) {size = 10}
 			setState({ ...state, size: size });
 		} else {
 			setState({ ...state, size: 0 });
@@ -47,7 +47,7 @@ const PuzzleGenerator = (props) => {
 	const onUpgradeHandler = () => {
 		const size = state.size;
 
-		if (size < 20) {
+		if (size < 10) {
 			setState({ ...state, size: size + 1 });
 		}
 	};
