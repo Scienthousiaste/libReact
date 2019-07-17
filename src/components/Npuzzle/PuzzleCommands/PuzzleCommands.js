@@ -12,6 +12,7 @@ const puzzleCommands = (props) => (
 		<PlayParams changeSpeed={props.changeSpeed} speed={props.speed} playClicked={props.playClicked}
 					play={props.play} playAuthorised={props.playAuthorised}
 					currentStep={props.currentStep} maxStep={props.maxStep} stepChanged={props.stepChanged}
+					showValueChanged={props.showValueChanged} showValue={props.showValue}
 		/>
 	</div>
 );

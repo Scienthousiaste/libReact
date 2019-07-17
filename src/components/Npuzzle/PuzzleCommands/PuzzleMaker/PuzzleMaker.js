@@ -1,12 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 
 import classes from './PuzzleMaker.less';
 import Box from '../../../UI/Box/Box';
 import PuzzleParser from './PuzzleParser/PuzzleParser';
 import PuzzleGenerator from './PuzzleGenerator/PuzzleGenerator';
 import RestartPuzzle from './RestartPuzzle/RestartPuzzle';
-
-import Button from '../../../UI/Button/Button';
 
 const PuzzleMaker = (props) => {
 

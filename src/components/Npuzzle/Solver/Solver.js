@@ -96,7 +96,7 @@ const Solver = (props) => {
 				solvable={props.solvable}
 				solve={resolveHandler}
 			/>
-			<SolveInfos time={props.solution.time} timeComplexity={props.solution.timeComplexity} sizeComplexity={props.solution.sizeComplexity} purges={props.solution.purges} />
+			<SolveInfos show={props.solution.time != null} time={props.solution.time} timeComplexity={props.solution.timeComplexity} sizeComplexity={props.solution.sizeComplexity} purges={props.solution.purges} />
 		</div>
 	)
 };

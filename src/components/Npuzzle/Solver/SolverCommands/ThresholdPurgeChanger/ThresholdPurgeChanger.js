@@ -5,7 +5,7 @@ import Slider from "@material-ui/core/Slider";
 
 
 const thresholdPurgeChanger = (props) => (
-	<Part title="Change Purge Threshold">
+	<Part title="Change purge threshold">
 		<Slider step={1000} min={100000} max={1000000} value={props.thresholdPurge}
 				onChange={(_, value) => props.changed(value)} />
 	</Part>

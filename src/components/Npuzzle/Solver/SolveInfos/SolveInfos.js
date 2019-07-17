@@ -8,19 +8,14 @@ import Part from '../../../UI/Part/Part';
 const SolveInfos = (props) => {
 
 	return (
-		<Box>
-			<Part title="Time">
-				{props.time}
+		<Box>{ props.show ?
+			<Part title="infos">
+				<p>Time : {props.time} s</p>
+				<p>Time Complexity : {props.timeComplexity}</p>
+				<p>Size Complexity : {props.sizeComplexity}</p>
+			{props.purges.length ? <p>Purges : {props.purges.length}</p> : null}
 			</Part>
-			<Part title="Time Complexity">
-				{props.timeComplexity}
-			</Part>
-			<Part title="Size Complexity">
-				{props.sizeComplexity}
-			</Part>
-			{props.purges.length ? <Part title="Purges">
-				{props.purges.length}
-			</Part> : null}
+			: null}
 		</Box>
 	);
 };

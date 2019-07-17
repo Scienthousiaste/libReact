@@ -35,8 +35,8 @@ const SolverCommands = (props) => {
 							   disabled={!props.algorithms[props.selectedAlgorithm].useHeuristic}/>
 			<WeightChanger max={MAX_WEIGHT} weight={props.weight} changed={changeWeightHandler}
 						   disabled={!props.algorithms[props.selectedAlgorithm].useHeuristic}/>
-			<SolveButton solvable={props.solvable} solve={props.solve}/>
 			<ThresholdPurgeChanger thresholdPurge={props.thresholdPurge} changed={props.thresholdPurgeChanged} />
+			<SolveButton solvable={props.solvable} solve={props.solve}/>
 		</Box>
 	);
 };

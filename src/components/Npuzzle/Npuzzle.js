@@ -10,7 +10,6 @@ import Solver from './Solver/Solver';
 import Modal from '../UI/Modal/Modal';
 
 import {MAX_SPEED} from '../../helpers/Npuzzle/defines';
-import TileSetLoading from "./TileSetLoading/TileSetLoading";
 import {getTime} from '../../helpers/utilities';
 
 const Npuzzle = () => {
@@ -41,6 +40,10 @@ const Npuzzle = () => {
 		timeComplexity: null,
 		sizeComplexity: null,
 		purges: [],
+	});
+
+	const [visual, setVisual] = useState({
+		showValue: true,
 	});
 
 	useEffect(() => {
@@ -103,6 +106,11 @@ const Npuzzle = () => {
 		console.log(solution);
 	};
 
+	const onChangeShowValueHandler = () => {
+		console.log(!visual.showValue);
+		setVisual({...visual, showValue: !visual.showValue});
+	};
+
 	const onChangeSpeedHandler = (speed) => {
 		setPlayParams({
 			...playParams,
@@ -113,16 +121,14 @@ const Npuzzle = () => {
 	const keyPressHandler = (event) => {
 		console.log(event.key);
 		switch (event.key) {
-			case ' ' :
+			case 'p' :
 				event.preventDefault();
 				togglePlayHandler();
 				break;
 			case 'ArrowLeft' :
-				event.preventDefault();
 				changeStepHandler(playState.currentIndex - 1);
 				break;
 			case 'ArrowRight':
-				event.preventDefault();
 				changeStepHandler(playState.currentIndex + 1);
 				break;
 			default:
@@ -190,21 +196,15 @@ const Npuzzle = () => {
 				arrays: null,
 				currentIndex: 0,
 			});
-			setSolution({
-				time: null,
-				timeComplexity: null,
-				sizeComplexity: null,
-				purges: [],
-			});
 		}, time);
 
 	};
 
-	let tileSet = <TileSetLoading size={state.size} />;
+	let tileSet = <TileSet arrayNumbers={arrayState} size={state.size} tileClass={'Loading'} showValue={visual.showValue} />;
 
 	if (!state.loading) {
 		tileSet = (
-			<TileSet arrayNumbers={arrayState} size={state.size} clicked={trySwap}/>
+			<TileSet arrayNumbers={arrayState} size={state.size} clicked={trySwap} showValue={visual.showValue} />
 		);
 	}
 
@@ -219,7 +219,9 @@ const Npuzzle = () => {
 								playClicked={togglePlayHandler} play={playParams.play}
 								playAuthorised={playParams.playAuthorised}
 								currentStep={playState.currentIndex} maxStep={playState.arrays ? playState.arrays.length : null}
-								stepChanged={changeStepHandler} />
+								stepChanged={changeStepHandler}
+								showValueChanged={onChangeShowValueHandler} showValue={visual.showValue}
+				/>
 				{tileSet}
 				<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail}
 						solvable={playParams.play ? false : state.solvable}

@@ -106,9 +106,9 @@ const PuzzleParser = (props) => {
 	};
 
 	return (
-		<Part title="Parse array">
-			<Input elementType={'textarea'} value={state.input} elementConfig={{style:{resize:'none'}}} changed={changeHandler}/>
-			<Button clicked={parseInput} disabled={!state.input} color="success">Parse puzzle</Button>
+		<Part title="Parse puzzle">
+			<Input elementType={'textarea'} value={state.input} elementConfig={{style:{resize:'none'}}} rows={8} changed={changeHandler}/>
+			<Button clicked={parseInput} disabled={!state.input} color="primary">Parse puzzle</Button>
 		</Part>
 	);
 };

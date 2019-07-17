@@ -4,7 +4,7 @@ import Box from '../../../UI/Box/Box';
 import SpeedChanger from './SpeedChanger/SpeedChanger';
 import PlayToggle from './PlayToggle/PlayToggle';
 import StepChanger from './StepChanger/StepChanger';
-
+import ToggleShowValue from './ToggleShowValue/ToggleShowValue';
 
 import {MAX_SPEED} from '../../../../helpers/Npuzzle/defines';
 
@@ -22,6 +22,7 @@ const PlayParams = (props) => {
 			<StepChanger step={props.currentStep} max={props.maxStep}
 						 moveLeft={() => props.stepChanged(props.currentStep - 1)}
 						 moveRight={() => props.stepChanged(props.currentStep + 1)}/>
+			<ToggleShowValue checked={props.showValue} showValueChanged={props.showValueChanged}/>
 		</Box>
 	);
 };
