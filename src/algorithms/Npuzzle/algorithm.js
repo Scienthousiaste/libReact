@@ -3,13 +3,6 @@ import doTestsPriorityQueue from '../../tests/helpers/Npuzzle/PriorityQueue.test
 import doTestsLinearConflicts from '../../tests/algorithms/Npuzzle/algorithm.test';
 import {THRESHOLD_SIZE_COMPLEXITY} from '../../helpers/Npuzzle/defines';
 
-/*
-
-The students have implemented an option to do a greedy search and are able to explain it.
-The students have implemented an option to do a uniform-cost search and are able to explain it.
-
-*/
-
 const displayMessage = (m) => {
 	alert(m);
 };
@@ -51,10 +44,8 @@ const foundSolution = (solutionState, runInfo) => ({
 });
 
 const accessibleStates = (curState, data) => {
-
 	let ret = [];
 	let dir = [1, -1, data.size, -data.size];
-
 	for (let i = 0; i < dir.length; i++) {
 		let d = dir[i];
 		let newIdx = curState.idxZero + d;
@@ -69,40 +60,6 @@ const accessibleStates = (curState, data) => {
 			let newArr = [...curState.arr];
 			newArr[curState.idxZero] = newArr[curState.idxZero + d];
 			newArr[curState.idxZero + d] = 0;
-
-			/* updateLinearConflicts
-			//TODO(opti): computeCost => updateCost
-			let newCost = curState.cost + 1 + weight * updateLinearConflicts(
-				curState.arr,
-				newArr,
-				size,
-				snail,
-				{x: x_new_zero, y: y_new_zero},
-				{x: x_cur_zero, y: y_cur_zero},
-				{x: snail[newArr[curState.idxZero] - 1] % size, y: Math.floor(snail[newArr[curState.idxZero] - 1])});
-			
-			const newState = {
-				arr:newArr,
-				idxZero: curState.idxZero + d,
-				cost: newCost,
-				step: curState.step + 1,
-				previousState: curState,
-			};
-
-				//updateManhattan qui fonctionne
-			let newCost = curState.cost + 1 + weight * updateManhattan(
-				{x: x_new_zero, y: y_new_zero},
-				{x: x_cur_zero, y: y_cur_zero},
-				{x: snail[newArr[curState.idxZero] - 1] % size, y: Math.floor(snail[newArr[curState.idxZero] - 1])});
-			const newState = {
-				arr:newArr,
-				idxZero: curState.idxZero + d,
-				cost: newCost,
-				step: curState.step + 1,
-				previousState: curState,
-			};
-			*/
-
 			const newStep = curState.step + 1;
 			const newCost = data.stepMultiplier * newStep + data.weight * data.heuristic(newArr, data.size, data.snail);
 			const newState = {
@@ -118,12 +75,6 @@ const accessibleStates = (curState, data) => {
 	return ret;
 };
 
-
-export const updateManhattanDistance = (current, previous, goal) => {
-	return (Math.abs(previous.y - goal.y) + Math.abs(previous.x - goal.x))
-		- (Math.abs(current.y - goal.y) + Math.abs(current.x - goal.x));
-};
-
 export const computeManhattanDistance = (arr, size, snail) => {
 	let dist = 0;
 	for (let i = 0; i < arr.length; i++) {
@@ -137,64 +88,9 @@ export const computeManhattanDistance = (arr, size, snail) => {
 	return dist;
 };
 
-export const updateLinearConflicts = (oldArr, newArr, size, snail, current, previous, goal) => {
-	// oldArr / newArr ne devrait changer strictement rien je crois
-	let oldConflicts = 0;
-	let newConflicts = 0;
-
-	//la ligne sur laquelle la case bouge ne peut pas changer de statut de conflits, seulement la dimension dans laquelle on entre/sort
-	// si x reste identique, on bouge dans la colonne, aucun conflit de cette colonne ne peut etre modifiée, par contre ceux de l'ancienne ligne
-	// ne sont plus pertinents et ceux de la nouvelle ligne sont a prendre en compte
-
-	if (current.x === previous.x) {
-		for (let yy = 0; yy < size; yy++) {
-			if (yy === previous.y) continue;
-			const goalXX = snail[oldArr[yy * size + previous.x] - 1] % size;
-			const goalYY = Math.floor(snail[oldArr[yy * size + previous.x] - 1] / size);
-			if (goal.x === goalXX && ((yy > previous.y && goalYY < goal.y) || (yy < previous.y && goalYY > goal.y))) {
-				oldConflicts++;
-			}
-		}
-		for (let yy = 0; yy < size; yy++) {
-			if (yy === current.y) continue;
-			const goalXX = snail[newArr[yy * size + current.x] - 1] % size;
-			const goalYY = Math.floor(snail[newArr[yy * size + current.x] - 1] / size);
-			if (goal.x === goalXX && ((yy > current.y && goalYY < goal.y) || (yy < current.y && goalYY > goal.y))) {
-				newConflicts++;
-			}
-		}
-	} else {
-		for (let xx = 0; xx < size; xx++) {
-			if (xx === previous.x) continue;
-			const goalXX = snail[oldArr[previous.y * size + xx] - 1] % size;
-			const goalYY = Math.floor(snail[oldArr[previous.y * size + xx] - 1] / size);
-			if (goal.y === goalYY && ((xx > previous.x && goalXX < goal.x) || (xx < previous.x && goalXX > goal.x))) {
-				oldConflicts++;
-			}
-		}
-		for (let xx = 0; xx < size; xx++) {
-			if (xx === current.x) continue;
-			const goalXX = snail[newArr[current.y * size + xx] - 1] % size;
-			const goalYY = Math.floor(snail[newArr[current.y * size + xx] - 1] / size);
-			if (goal.y === goalYY && ((xx > current.x && goalXX < goal.x) || (xx < current.x && goalXX > goal.x))) {
-				newConflicts++;
-			}
-		}
-	}
-
-	if (newConflicts !== oldConflicts) {
-		console.log("new conflicts ", newConflicts, " old ", oldConflicts);
-	}
-	let ret1 = (newConflicts - oldConflicts) * 2;
-	let ret2 = updateManhattanDistance(current, previous, goal);
-	console.log("ret update linear, conflicts = ", ret1, "updateManhattan = ", ret2);
-	return ret1 + ret2;
-};
-
 export const uniformCostHeuristic = () => {
 	return 0;
 };
-
 
 export const computeLinearConflicts = (arr, size, snail) => {
 	let conflicts = 0;
@@ -225,7 +121,7 @@ export const computeLinearConflicts = (arr, size, snail) => {
 			}
 		}
 	}
-	return ((conflicts * 2) + computeManhattanDistance(arr, size, snail));
+	return (2 * conflicts) + computeManhattanDistance(arr, size, snail);
 };
 
 export const computeRelaxedAdjacency = (arr, size, snail) => {
@@ -282,11 +178,6 @@ export const solve = (puzzleData) => {
 		stepMultiplier: (puzzleData.greedy === true ? 0 : 1),
 		purges: puzzleData.purges ? [...puzzleData.purges] : [],
 	};
-
-	/* CLEANING
-	- should not use puzzleData anymore, only runInfo 
-	- openSet, closedSet, etc in runInfo
-	*/
 
 	let [arr, size, snail, heuristic, weight] = [puzzleData.arr, puzzleData.size, puzzleData.snail, puzzleData.heuristic, puzzleData.weight];
 	let openSet = new PriorityQueue();
@@ -352,7 +243,6 @@ export const solve = (puzzleData) => {
 					purges: [...runInfo.purges, {cost: nextState.cost, step: nextState.step}],
 				};
 				console.log("Purge - we restart from ", nextState.arr, ", with cost ", nextState.cost);
-				//TODO reverif que time complexity est ok
 				openSet = {};
 				openSetContent = {};
 				closedSet = {};
