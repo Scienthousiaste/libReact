@@ -7,6 +7,7 @@ import AlgorithmSelector from './AlgorithmSelector/AlgorithmSelector';
 import HeuristicSelector from './HeuristicSelector/HeuristicSelector';
 import WeightChanger from './WeightChanger/WeightChanger';
 import SolveButton from './SolveButton/SolveButton';
+import ThresholdPurgeChanger from './ThresholdPurgeChanger/ThresholdPurgeChanger';
 
 import {MAX_WEIGHT} from '../../../../helpers/Npuzzle/defines';
 
@@ -35,6 +36,7 @@ const SolverCommands = (props) => {
 			<WeightChanger max={MAX_WEIGHT} weight={props.weight} changed={changeWeightHandler}
 						   disabled={!props.algorithms[props.selectedAlgorithm].useHeuristic}/>
 			<SolveButton solvable={props.solvable} solve={props.solve}/>
+			<ThresholdPurgeChanger thresholdPurge={props.thresholdPurge} changed={props.thresholdPurgeChanged} />
 		</Box>
 	);
 };

@@ -3,6 +3,8 @@ import React, {useState, useEffect} from 'react';
 import SolverCommand from './SolverCommands/SolverCommands';
 import SolveInfos from './SolveInfos/SolveInfos';
 
+import { THRESHOLD_SIZE_COMPLEXITY } from '../../../helpers/Npuzzle/defines';
+
 import {
 	computeLinearConflicts,
 	computeManhattanDistance,
@@ -20,6 +22,7 @@ const Solver = (props) => {
 		weight: 0,
 		selectedHeuristic: 0,
 		selectedAlgorithm: 0,
+		thresholdPurge: 0,
 	});
 
 	const heuristics = [
@@ -38,6 +41,7 @@ const Solver = (props) => {
 			weight: 20,
 			selectedHeuristic: 0,
 			selectedAlgorithm: 0,
+			thresholdPurge: THRESHOLD_SIZE_COMPLEXITY,
 		});
 	}, []);
 
@@ -53,6 +57,10 @@ const Solver = (props) => {
 		setState({...state, weight: weight});
 	};
 
+	const changeThresholdPurgeHandler = (thresholdPurge) => {
+		setState({...state, thresholdPurge: thresholdPurge});
+	}
+
 	const resolveHandler = () => {
 		props.waiting();
 		setTimeout(() => {
@@ -62,6 +70,7 @@ const Solver = (props) => {
 				snail: props.snail,
 				weight: state.weight,
 				heuristic: heuristics[state.selectedHeuristic].func,
+				thresholdPurge: state.thresholdPurge,
 			});
 			if (solution) {
 				props.resolved(solution);
@@ -77,13 +86,17 @@ const Solver = (props) => {
 				algorithms={algorithms}
 				selectedAlgorithm={state.selectedAlgorithm}
 				weight={state.weight}
+				thresholdPurge={state.thresholdPurge}
+
 				heuristicChanged={changeHeuristicHandler}
 				algorithmChanged={changeAlgorithmHandler}
 				weightChanged={changeWeightHandler}
+				thresholdPurgeChanged={changeThresholdPurgeHandler}
+
 				solvable={props.solvable}
 				solve={resolveHandler}
 			/>
-			<SolveInfos/>
+			<SolveInfos time={props.solution.time} timeComplexity={props.solution.timeComplexity} sizeComplexity={props.solution.sizeComplexity} purges={props.solution.purges} />
 		</div>
 	)
 };

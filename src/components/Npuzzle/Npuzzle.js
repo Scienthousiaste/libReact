@@ -4,13 +4,14 @@ import classes from './Npuzzle.less';
 import {computeSnailIteration, countInversions, generateRandomArray} from '../../helpers/Npuzzle/functions';
 
 import TileSet from './TileSet/TileSet';
-import Spinner from '../UI/Spinner/Spinner';
-import PuzzleInfos from './PuzzleInfos/PuzzleInfos';
 import PuzzleCommands from './PuzzleCommands/PuzzleCommands';
 import Solver from './Solver/Solver';
 
+import Modal from '../UI/Modal/Modal';
+
 import {MAX_SPEED} from '../../helpers/Npuzzle/defines';
 import TileSetLoading from "./TileSetLoading/TileSetLoading";
+import {getTime} from '../../helpers/utilities';
 
 const Npuzzle = () => {
 	const [state, setState] = useState({
@@ -34,6 +35,14 @@ const Npuzzle = () => {
 		speed: 800,
 	});
 
+	const [solution, setSolution] = useState({
+		error : false,
+		time: null,
+		timeComplexity: null,
+		sizeComplexity: null,
+		purges: [],
+	});
+
 	useEffect(() => {
 		const size = 5;
 		const array = generateRandomArray(size, true);
@@ -46,7 +55,6 @@ const Npuzzle = () => {
 			startArray: array,
 		});
 		setArrayState(array);
-		console.log('LA');
 	}, []);
 
 	useEffect(() => {
@@ -71,16 +79,27 @@ const Npuzzle = () => {
 		});
 	};
 
-	const onResolveHandler = (solution) => {
+	const onResolveHandler = (sol) => {
 		setState({
 			...state,
 			loading: false,
 		});
+		if (sol.error) {
+			setSolution({...solution, error: true});
+			return ;
+		}
 		setPlayState({
-			arrays: solution.path,
+			arrays: sol.path,
 			currentIndex: 0,
 		});
 		setPlayParams({...playParams, play: true, playAuthorised: true});
+		setSolution({
+			...solution,
+			time: getTime(sol.infos.time),
+			timeComplexity: sol.infos.timeComplexity,
+			sizeComplexity: sol.infos.sizeComplexityTotal + sol.infos.sizeComplexity,
+			purges: sol.infos.purges
+		});
 		console.log(solution);
 	};
 
@@ -132,6 +151,10 @@ const Npuzzle = () => {
 		}
 	};
 
+	const removeErrorHandler = () => {
+		setSolution({...solution, error: false});
+	};
+
 	const trySwap = (value) => {
 		let idx = arrayState.findIndex((element) => element === value);
 		if (idx !== -1 && value !== 0) {
@@ -167,6 +190,12 @@ const Npuzzle = () => {
 				arrays: null,
 				currentIndex: 0,
 			});
+			setSolution({
+				time: null,
+				timeComplexity: null,
+				sizeComplexity: null,
+				purges: [],
+			});
 		}, time);
 
 	};
@@ -181,6 +210,9 @@ const Npuzzle = () => {
 
 	return (
 		<div tabIndex={'1'} className={classes.Npuzzle} onKeyDown={keyPressHandler}>
+			<Modal show={solution.error} closed={removeErrorHandler}>
+				<p>Cannot find a solution with these parameters.</p>
+			</Modal>
 			<div className={classes.Board}>
 				<PuzzleCommands createNewPuzzle={setNewPuzzle} startArray={state.startArray} size={state.size}
 								changeSpeed={onChangeSpeedHandler} speed={playParams.speed}
@@ -191,7 +223,7 @@ const Npuzzle = () => {
 				{tileSet}
 				<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail}
 						solvable={playParams.play ? false : state.solvable}
-						resolved={onResolveHandler} waiting={onWaitingResolve}/>
+						resolved={onResolveHandler} waiting={onWaitingResolve} solution={solution} />
 			</div>
 		</div>
 	)

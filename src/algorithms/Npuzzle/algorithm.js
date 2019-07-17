@@ -28,8 +28,7 @@ const goalStateString = (puzzleData) => {
 };
 
 const logTime = (runInfo) => {
-	runInfo.time = (Number(Date.now()) - Number(runInfo.time)) / 1000;
-	console.log("Time to find the solution: " + runInfo.time + "s");
+	console.log("Time to find the solution: " + ((Number(Date.now()) - Number(runInfo.time)) / 1000) + "s");
 };
 
 const isInClosedSetOrLowerCostInOpenSet = (stringArr, cost, closedSet, openSetContent) => {
@@ -70,7 +69,7 @@ const accessibleStates = (curState, data) => {
 			let newArr = [...curState.arr];
 			newArr[curState.idxZero] = newArr[curState.idxZero + d];
 			newArr[curState.idxZero + d] = 0;
-			
+
 			/* updateLinearConflicts
 			//TODO(opti): computeCost => updateCost
 			let newCost = curState.cost + 1 + weight * updateLinearConflicts(
@@ -107,9 +106,9 @@ const accessibleStates = (curState, data) => {
 			const newStep = curState.step + 1;
 			const newCost = data.stepMultiplier * newStep + data.weight * data.heuristic(newArr, data.size, data.snail);
 			const newState = {
-				arr:newArr,
+				arr: newArr,
 				idxZero: curState.idxZero + d,
-				cost: newCost, 
+				cost: newCost,
 				step: newStep,
 				previousState: curState,
 			};
@@ -122,7 +121,7 @@ const accessibleStates = (curState, data) => {
 
 export const updateManhattanDistance = (current, previous, goal) => {
 	return (Math.abs(previous.y - goal.y) + Math.abs(previous.x - goal.x))
-			- (Math.abs(current.y - goal.y) + Math.abs(current.x - goal.x));
+		- (Math.abs(current.y - goal.y) + Math.abs(current.x - goal.x));
 }
 
 export const computeManhattanDistance = (arr, size, snail) => {
@@ -142,7 +141,7 @@ export const updateLinearConflicts = (oldArr, newArr, size, snail, current, prev
 	// oldArr / newArr ne devrait changer strictement rien je crois
 	let oldConflicts = 0;
 	let newConflicts = 0;
-	
+
 	//la ligne sur laquelle la case bouge ne peut pas changer de statut de conflits, seulement la dimension dans laquelle on entre/sort
 	// si x reste identique, on bouge dans la colonne, aucun conflit de cette colonne ne peut etre modifiée, par contre ceux de l'ancienne ligne
 	// ne sont plus pertinents et ceux de la nouvelle ligne sont a prendre en compte
@@ -164,8 +163,7 @@ export const updateLinearConflicts = (oldArr, newArr, size, snail, current, prev
 				newConflicts++;
 			}
 		}
-	}
-	else {
+	} else {
 		for (let xx = 0; xx < size; xx++) {
 			if (xx === previous.x) continue;
 			const goalXX = snail[oldArr[previous.y * size + xx] - 1] % size;
@@ -183,13 +181,13 @@ export const updateLinearConflicts = (oldArr, newArr, size, snail, current, prev
 			}
 		}
 	}
-	
+
 	if (newConflicts !== oldConflicts) {
 		console.log("new conflicts ", newConflicts, " old ", oldConflicts);
 	}
 	let ret1 = (newConflicts - oldConflicts) * 2;
 	let ret2 = updateManhattanDistance(current, previous, goal);
-	console.log("ret update linear, conflicts = ", ret1, "updateManhattan = ",  ret2);
+	console.log("ret update linear, conflicts = ", ret1, "updateManhattan = ", ret2);
 	return ret1 + ret2;
 }
 
@@ -216,7 +214,7 @@ export const computeLinearConflicts = (arr, size, snail) => {
 				}
 			}
 		}
-		if (y === goalY) { 
+		if (y === goalY) {
 			for (let xx = x + 1; xx < size; xx++) {
 				if (snail[arr[y * size + xx]] === 0) continue;
 				const goalXX = snail[arr[y * size + xx] - 1] % size;
@@ -232,7 +230,7 @@ export const computeLinearConflicts = (arr, size, snail) => {
 
 export const computeRelaxedAdjacency = (arr, size, snail) => {
 	let ret = 0;
-	let idxZero = arr.indexOf(0); 
+	let idxZero = arr.indexOf(0);
 	let fakeArr = [...arr];
 	let misplaced = [];
 	let goalArr = computeGoalState(snail);
@@ -249,13 +247,12 @@ export const computeRelaxedAdjacency = (arr, size, snail) => {
 			fakeArr[idxZero] = fakeArr[idxMisplacedElem];
 			fakeArr[idxMisplacedElem] = 0;
 			idxZero = idxMisplacedElem;
-		}
-		else {
+		} else {
 			const elemToMove = goalArr[idxZero];
 			const idxElemToMove = fakeArr.indexOf(elemToMove);
 			fakeArr[idxZero] = elemToMove;
 			fakeArr[idxElemToMove] = 0;
-			idxZero = idxElemToMove; 
+			idxZero = idxElemToMove;
 			misplaced.splice(misplaced.indexOf(elemToMove), 1);
 		}
 		ret++;
@@ -264,7 +261,7 @@ export const computeRelaxedAdjacency = (arr, size, snail) => {
 }
 
 export const greedy = (puzzleData) => {
-	return solve({...puzzleData, greedy:true});
+	return solve({...puzzleData, greedy: true});
 	/*
 	let data = {
 		...puzzleData,
@@ -326,7 +323,7 @@ export const greedy = (puzzleData) => {
 }
 
 export const uniform = (puzzleData) => {
-	return solve({...puzzleData, heuristic:uniformCostHeuristic});
+	return solve({...puzzleData, heuristic: uniformCostHeuristic});
 }
 
 export const solve = (puzzleData) => {
@@ -341,13 +338,14 @@ export const solve = (puzzleData) => {
 		time: (puzzleData.time ? puzzleData.time : Date.now()),
 		goalState: (puzzleData.goalState ? puzzleData.goalState : goalStateString(puzzleData)),
 		stepMultiplier: (puzzleData.greedy === true ? 0 : 1),
+		purges: puzzleData.purges ? [...puzzleData.purges] : [],
 	};
 
 	/* CLEANING
 	- should not use puzzleData anymore, only runInfo 
 	- openSet, closedSet, etc in runInfo
 	*/
-	
+
 	let [arr, size, snail, heuristic, weight] = [puzzleData.arr, puzzleData.size, puzzleData.snail, puzzleData.heuristic, puzzleData.weight];
 	let openSet = new PriorityQueue();
 	let openSetContent = {};
@@ -379,7 +377,7 @@ export const solve = (puzzleData) => {
 		runInfo.timeComplexity++;
 		const state = openSet.dequeue();
 		const nextStates = accessibleStates(state.content, runInfo);
-	
+
 		for (let i = 0; i < nextStates.length; i++) {
 			const accessibleState = nextStates[i];
 			if (accessibleState.arr.toString() === runInfo.goalState) {
@@ -393,7 +391,10 @@ export const solve = (puzzleData) => {
 			}
 			runInfo.sizeComplexity = Math.max(openSet.getSize(), runInfo.sizeComplexity);
 			if (runInfo.sizeComplexity > runInfo.thresholdPurge) {
-				const nextState = findMaxStepNode(openSet);	
+				const nextState = findMaxStepNode(openSet);
+				if (runInfo.purges.length && runInfo.purges[runInfo.purges.length - 1].cost <= nextState.cost) {
+					return ({error: true});
+				}
 				const nextRunInfo = {
 					...runInfo,
 					heuristic: heuristic,
@@ -404,7 +405,8 @@ export const solve = (puzzleData) => {
 					purgeStep: runInfo.purgeStep + nextState.step,
 					solutionPath: runInfo.solutionPath.concat(retrievePath(nextState)),
 					sizeComplexityTotal: runInfo.sizeComplexity + runInfo.sizeComplexityTotal,
-				}	
+					purges: [...runInfo.purges, {cost: nextState.cost, step: nextState.step}],
+				};
 				console.log("Purge - we restart from ", nextState.arr, ", with cost ", nextState.cost);
 				//TODO reverif que time complexity est ok
 				openSet = {};
@@ -419,7 +421,7 @@ export const solve = (puzzleData) => {
 };
 
 const findMaxStepNode = (openSet) => {
-	let maxStep = null; 
+	let maxStep = null;
 	let heap = openSet.heap;
 	for (let i = 1; i < heap.length; i++) {
 		if (!maxStep || heap[i].content.step > maxStep.step) {

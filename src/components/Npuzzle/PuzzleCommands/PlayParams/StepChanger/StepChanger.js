@@ -7,7 +7,7 @@ import Button from '../../../../UI/Button/Button';
 
 
 const stepChanger = (props) => (
-	<Part title="Change speed">
+	<Part title="Steps">
 		<div className={classes.stepChanger}>
 		<Button clicked={props.moveLeft} disabled={!(props.step > 0)} color={'primary'}>Left</Button>
 			<p>{props.max ?  props.step + 1 + '/' + props.max : null}</p>
