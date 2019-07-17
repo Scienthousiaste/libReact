@@ -39,6 +39,7 @@ const Npuzzle = () => {
 		time: null,
 		timeComplexity: null,
 		sizeComplexity: null,
+		steps: null,
 		purges: [],
 	});
 
@@ -101,9 +102,9 @@ const Npuzzle = () => {
 			time: getTime(sol.infos.time),
 			timeComplexity: sol.infos.timeComplexity,
 			sizeComplexity: sol.infos.sizeComplexityTotal + sol.infos.sizeComplexity,
+			steps: sol.path.length,
 			purges: sol.infos.purges
 		});
-		console.log(solution);
 	};
 
 	const onChangeShowValueHandler = () => {
@@ -225,7 +226,7 @@ const Npuzzle = () => {
 				{tileSet}
 				<Solver arrayNumbers={arrayState} size={state.size} snail={state.snail}
 						solvable={playParams.play ? false : state.solvable}
-						resolved={onResolveHandler} waiting={onWaitingResolve} solution={solution} />
+						resolved={onResolveHandler} waiting={onWaitingResolve} solution={solution}/>
 			</div>
 		</div>
 	)

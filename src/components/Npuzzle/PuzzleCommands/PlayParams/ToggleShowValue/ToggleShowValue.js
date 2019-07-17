@@ -5,9 +5,9 @@ import CheckBox from "../../../../UI/CheckBox/CheckBox";
 
 
 const toggleShowValue = (props) => (
-		<Part>
-			<CheckBox checked={props.checked} clicked={props.showValueChanged} name="showValue">show value</CheckBox>
-		</Part>
+	<Part>
+		<CheckBox checked={props.checked} clicked={props.showValueChanged} name="showValue">show value</CheckBox>
+	</Part>
 );
 
 export default toggleShowValue;

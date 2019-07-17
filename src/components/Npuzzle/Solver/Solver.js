@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import SolverCommand from './SolverCommands/SolverCommands';
 import SolveInfos from './SolveInfos/SolveInfos';
 
-import { THRESHOLD_SIZE_COMPLEXITY } from '../../../helpers/Npuzzle/defines';
+import {THRESHOLD_SIZE_COMPLEXITY} from '../../../helpers/Npuzzle/defines';
 
 import {
 	computeLinearConflicts,
@@ -96,7 +96,9 @@ const Solver = (props) => {
 				solvable={props.solvable}
 				solve={resolveHandler}
 			/>
-			<SolveInfos show={props.solution.time != null} time={props.solution.time} timeComplexity={props.solution.timeComplexity} sizeComplexity={props.solution.sizeComplexity} purges={props.solution.purges} />
+			<SolveInfos show={props.solution.time != null} time={props.solution.time}
+						timeComplexity={props.solution.timeComplexity} sizeComplexity={props.solution.sizeComplexity}
+						steps={props.solution.steps} purges={props.solution.purges} />
 		</div>
 	)
 };

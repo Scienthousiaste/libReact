@@ -4,14 +4,21 @@ import React, {useState} from 'react';
 import Part from '../../../../UI/Part/Part';
 import Input from '../../../../UI/Input/Input';
 import Button from '../../../../UI/Button/Button';
+import Modal from '../../../../UI/Modal/Modal';
 
 const PuzzleParser = (props) => {
 	const [state, setState] = useState({
-		input: ''
+		input: '',
+		error: false,
+		errorMessage: '',
 	});
 
 	const displayMessage = (m) => {
-		alert(m);
+		setState({ ...state, error: true, errorMessage: m });
+	};
+
+	const removeErrorHandler = () => {
+		setState({...state, error: false, errorMessage: ''});
 	};
 
 	const changeHandler = (event) => {
@@ -107,6 +114,9 @@ const PuzzleParser = (props) => {
 
 	return (
 		<Part title="Parse puzzle">
+			<Modal show={state.error} closed={removeErrorHandler}>
+				{state.errorMessage}
+			</Modal>
 			<Input elementType={'textarea'} value={state.input} elementConfig={{style:{resize:'none'}}} rows={8} changed={changeHandler}/>
 			<Button clicked={parseInput} disabled={!state.input} color="primary">Parse puzzle</Button>
 		</Part>

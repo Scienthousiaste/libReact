@@ -13,7 +13,8 @@ const SolveInfos = (props) => {
 				<p>Time : {props.time} s</p>
 				<p>Time Complexity : {props.timeComplexity}</p>
 				<p>Size Complexity : {props.sizeComplexity}</p>
-			{props.purges.length ? <p>Purges : {props.purges.length}</p> : null}
+				<p>Steps : {props.steps}</p>
+				{props.purges.length ? <p>Purges : {props.purges.length}</p> : null}
 			</Part>
 			: null}
 		</Box>
