@@ -38,7 +38,7 @@ const Solver = (props) => {
 
 	useEffect(() => {
 		setState({
-			weight: 20,
+			weight: 2,
 			selectedHeuristic: 0,
 			selectedAlgorithm: 0,
 			thresholdPurge: THRESHOLD_SIZE_COMPLEXITY,
